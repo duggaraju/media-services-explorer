@@ -4,5 +4,9 @@
 // The list of which env maps to which file can be found in `angular-cli.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  aadAuthority: "https://login.microsoftonline.com/",
+  aadTenant: "microsoft.onmicrosoft.com",
+  aadClientId: "",
+  graphResource: "https://graph.microsoft.com"
 };

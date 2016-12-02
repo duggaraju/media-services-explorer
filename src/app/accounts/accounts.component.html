@@ -1,0 +1,16 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-4">
+      <h2>Accounts</h2>
+      <ul class="list-group">
+        <li class="list-group-item"
+          *ngFor="let account of accounts"
+          [class.active]="account === selectedAccount"
+          (click)="onSelect(account)" >{{account.accountName}}</li>
+      </ul>
+    </div>
+    <div class="col-md-8">
+      <account-details [account]="selectedAccount" ></account-details>
+    </div>
+  </div>
+</div>

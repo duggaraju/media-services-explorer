@@ -1,0 +1,19 @@
+<div class="container-fluid">
+  <ul class="nav nav-pills">
+    <li class="nav-item">
+      <a class="nav-link active" [routerLink]="['assets']" >Assets</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [routerLink]="['channels']" >Channels</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [routerLink]="['origins']">Streaming Endpoints</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" [routerLink]="['jobs']">Jobs</a>
+    </li>
+  </ul>
+  <div class="tab-content">
+    <router-outlet></router-outlet>
+  </div>
+<div>

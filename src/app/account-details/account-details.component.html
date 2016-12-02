@@ -1,0 +1,31 @@
+<div class="container" *ngIf="account">
+  <form>
+    <div class="form-group row">
+      <label for="accountName" class="col-sm-3 col-form-label" >Account Name</label>
+      <div class="col-sm-9">
+        <input type="text" class="col-sm-9 form-control" id="accountName" name="accountName" [ngModel]="account.accountName" />
+      </div>
+    </div>
+    <div class="form-group row">
+      <label for="accountKey" class="col-sm-3 col-form-label">Account Key</label>
+      <div class="col-sm-9">
+        <input class="form-control" type="text" id="accountKey" name="accountKey" [ngModel]="account.accountKey"/>
+      </div>
+    </div>
+    <div class="form-group row">
+      <label class="col-sm-3 col-form-label" >Environment</label>
+      <div class="col-sm-9">
+        <select class="form-control" >
+          <option>Production</option>
+          <option>Mooncake</option>
+          <option>Fairfax</option>
+          <option>Custom</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group row">
+        <button class="btn btn-primary" >Save</button>
+        <button class="btn btn-primary" (click)="onClick()">Connect</button>
+    </div>
+  </form>
+</div>
