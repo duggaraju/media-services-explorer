@@ -1,0 +1,16 @@
+<div class="container-fluid" >
+  <swui-datatable 
+    [rows]="rows"
+    [columns]="columns"
+    [columnMode]="'force'"
+    [limit]="pageSize"
+    [count]="count"
+    [externalPaging]="true"
+    [rowHeight]="'auto'"
+    [headerHeight]="50"
+    [footerHeight]="50"
+    [offset]="offset"
+    (page)="onPage($event)"
+    class="material striped" >
+  </swui-datatable>
+</div>

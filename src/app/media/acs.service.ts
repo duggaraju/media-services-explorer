@@ -1,7 +1,7 @@
 
 import { Injectable } from '@angular/core';
 import { Http, Headers, RequestOptions, Jsonp } from '@angular/http';
-import { Observable } from 'rxjs/RX';
+import { Observable } from 'rxjs/Rx';
 import { MediaAccount } from './mediaaccount';
 
 interface Token {
@@ -19,8 +19,8 @@ export class AcsService {
     }
 
     public getAccessToken(): Observable<Headers>    {
-        var expiryTime = new Date(Date.now() + 60000);
-        if (!this.token || this.token.ExpirationDate < expiryTime) {
+        let now = new Date(Date.now() + 60000);
+        if (!this.token || this.token.ExpirationDate < now) {
             console.log(`Needs to refresh token for ${this.account.acsBaseAddress[0]}`);
             return this.refreshToken()
             .map(token => this.getAuthHeader());
@@ -42,7 +42,7 @@ export class AcsService {
             .map(res =>  {
                 this.token = res.json() as Token;
                 this.token.ExpirationDate = new Date(Date.now() + (1000 * this.token.expires_in));
-                console.log(`got token for ${this.token.expires_in} seconds ${this.token.ExpirationDate}`);
+                console.log(`got token at ${new Date()} for ${this.token.expires_in} seconds expiring at ${this.token.ExpirationDate}`);
                 return this.token;
              });
     }

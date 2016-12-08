@@ -8,11 +8,18 @@ import { AppComponent } from './app.component';
 import { AccountComponent } from './account/account.component';
 import { AccountDetailsComponent } from './account-details/account-details.component';
 import { AccountsComponent } from './accounts/accounts.component';
-import { ChannelsComponent } from './channels/channels.component';
-import { AssetsComponent } from './assets/assets.component';
-import { JobsComponent } from './jobs/jobs.component';
-import { StreamingendpointsComponent } from './streamingendpoints/streamingendpoints.component';
+import { ChannelsComponent } from './account/channels/channels.component';
+import { AssetsComponent } from './account/assets/assets.component';
+import { JobsComponent } from './account/jobs/jobs.component';
+import { StreamingendpointsComponent } from './account/streamingendpoints/streamingendpoints.component';
+import { Angular2DataTableModule } from 'angular2-data-table';
+import { MediaServiceFactory } from './media/media.service.factory';
+import { LocatorsComponent } from './account/locators/locators.component';
+import { KeysComponent } from './account/keys/keys.component';
+import { AccessPoliciesComponent } from './account/access-policies/access-policies.component';
+import { DeliveryPoliciesComponent } from './account/delivery-policies/delivery-policies.component';
 
+const routeTracing = false;
 
 export const routes: Route[] = [
   { path: "", redirectTo: "accounts", pathMatch: "full"},
@@ -25,7 +32,11 @@ export const routes: Route[] = [
       { path: "assets", component: AssetsComponent },
       { path: "channels", component: ChannelsComponent },
       { path: "origins", component: StreamingendpointsComponent },
-      { path: "jobs", component: JobsComponent }
+      { path: "jobs", component: JobsComponent },
+      { path: "locators", component: LocatorsComponent },
+      { path: "accesspolicies", component: AccessPoliciesComponent },
+      { path: "deliverypolicies", component: DeliveryPoliciesComponent },
+      { path: "keys", component: KeysComponent }
     ]
   }];
 
@@ -38,17 +49,23 @@ export const routes: Route[] = [
     ChannelsComponent,
     AssetsComponent,
     JobsComponent,
-    StreamingendpointsComponent
+    StreamingendpointsComponent,
+    LocatorsComponent,
+    KeysComponent,
+    AccessPoliciesComponent,
+    DeliveryPoliciesComponent
   ],
   imports: [
+    Angular2DataTableModule,
     BrowserModule,
     FormsModule,
     HttpModule,
     JsonpModule,
-    RouterModule.forRoot(routes, { useHash: true})
+    RouterModule.forRoot(routes, {  enableTracing: routeTracing, useHash: true})
   ],
   providers: [
-    { provide: LocationStrategy, useClass: HashLocationStrategy }
+    { provide: LocationStrategy, useClass: HashLocationStrategy },
+    MediaServiceFactory
   ],
   bootstrap: [AppComponent ]
 })

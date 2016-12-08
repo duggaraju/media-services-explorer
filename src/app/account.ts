@@ -7,22 +7,29 @@ export class Account implements MediaAccount {
     public scope:string;
     public apiUrl: string;
     public acsBaseAddress: string[];
-    public environment: MediaEnvironment;
+    public environment = MediaEnvironment.Production;
 
     public constructor(accountName?: string, accountKey?:string, environment?: MediaEnvironment) {
         this.accountName = accountName;
         this.accountKey = accountKey;
-        this.environment = environment;
-        this.getSettingsForEnvironment(environment);
+        this.environment = environment || MediaEnvironment.Production;
     }
 
-    public getSettingsForEnvironment(environment:MediaEnvironment) {
-        let template = Account.environments.get(environment);
+    public get mediaEnvironment(): string {
+        return MediaEnvironment[this.environment];
+    }
+
+    public set mediaEnvironment(value: string) {
+        this.environment = MediaEnvironment[value] || MediaEnvironment.Production;
+    }
+
+    public static getSettingsForEnvironment(account: Account) {
+        let template = Account.environments.get(account.environment);
         if (template) {
-            console.log(`Found settings for ${MediaEnvironment[environment]} ${template.scope}, ${template.apiUrl}`);
-            this.scope = template.scope;
-            this.apiUrl = template.apiUrl;
-            this.acsBaseAddress = template.acsBaseAddress;
+            console.log(`Found settings for ${MediaEnvironment[account.environment]} ${template.scope}, ${template.apiUrl}`);
+            account.scope = template.scope;
+            account.apiUrl = template.apiUrl;
+            account.acsBaseAddress = template.acsBaseAddress;
         }
     };
 

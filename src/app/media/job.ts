@@ -1,4 +1,4 @@
-export interface Channel {
+export interface Job {
     Name: string;
     Id: string;
     State: string;

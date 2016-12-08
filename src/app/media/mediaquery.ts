@@ -2,7 +2,7 @@ import f from 'odata-filter-builder';
 
 export class MediaQuery {
 
-    static readonly defaultCount:number = 200;
+    static readonly defaultCount:number = 50;
     public readonly query:f;
 
     public skip: number;

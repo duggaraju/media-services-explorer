@@ -5,7 +5,8 @@ import { ActivatedRoute, Params } from "@angular/router";
 @Component({
   selector: 'account',
   templateUrl: './account.component.html',
-  styleUrls: ['./account.component.css']
+  styleUrls: ['./account.component.css'],
+  
 })
 export class AccountComponent {
 

@@ -1,12 +1,17 @@
 
 import { Injectable } from '@angular/core';
 import { AcsService } from './acs.service';
-import { Http, Headers, Jsonp, RequestOptions, RequestMethod, Request, Response } from '@angular/http';
+import { Http, Headers, Jsonp, RequestOptions, RequestMethod, Request, Response, URLSearchParams } from '@angular/http';
 import { MediaAccount } from './mediaaccount';
 import { Asset } from './asset';
 import { Channel } from './channel';
+import { Job } from './job';
+import { ContentKey } from './contentkey';
+import { Locator } from './locator';
+import { AccessPolicy } from './accesspolicy';
+import { DeliveryPolicy } from './deliverypolicy';
 import { StreamingEndpoint } from './streamingendpoint';
-import { Observable } from 'rxjs/RX';
+import { Observable } from 'rxjs/Rx';
 import { MediaQuery } from "./mediaquery";
 import {QueryResult} from "./queryresult";
 
@@ -46,7 +51,7 @@ export class MediaService {
                     return this.apiUrl;
                 });
         }
-        return Observable.from(this.apiUrl);
+        return Observable.of(this.apiUrl);
     }
 
     /**
@@ -62,7 +67,7 @@ export class MediaService {
     /**
      * Queries entities
      */
-    getEntities<T>(entityName: string, query?:MediaQuery): Observable<T[]> {
+    getEntities<T>(entityName: string, query?:MediaQuery): Observable<QueryResult<T>> {
         let entityUrl: string; 
         return this.getApiUrl()
             .flatMap(url => {
@@ -70,19 +75,58 @@ export class MediaService {
                 return this.acsService.getAccessToken()
             }).flatMap(headers =>  {
                 var options = this.getRequestOptions(headers);
+                if (query) {
+                    options.search = this.buildSearch(query);
+                }
+                console.log(`querying ${entityUrl}`);
                 return this.http.get(entityUrl, options);
-            }).map(response => response.json().value);
+            }).map(response => {
+                let json = response.json();
+                return <QueryResult<T>> {
+                    count: parseInt(json["odata.count"], 10),
+                    value: json.value
+                };
+            });
     }
 
-    getStreamingEndpoints(): Observable<StreamingEndpoint[]> {
-        return this.getEntities<StreamingEndpoint>("StreamingEndpoints");
+    private buildSearch(query: MediaQuery): URLSearchParams {
+        var params = new URLSearchParams();
+        params.set("$inlinecount", "allpages");
+        params.set("$top", query.top.toString());
+        params.set("$skip", query.skip.toString());
+        params.set("$filter", query.query.toString());
+        return params;
     }
 
-    getChannels(): Observable<Channel[]> {
-        return this.getEntities<Channel>("Channels");
+    getStreamingEndpoints(query: MediaQuery): Observable<QueryResult<StreamingEndpoint>> {
+        return this.getEntities<StreamingEndpoint>("StreamingEndpoints", query);
     }
 
-    getAssets(): Observable<Asset[]> {
-        return this.getEntities<Asset>("Assets");
+    getChannels(query: MediaQuery): Observable<QueryResult<Channel>> {
+        return this.getEntities<Channel>("Channels", query);
+    }
+
+    getAssets(query: MediaQuery): Observable<QueryResult<Asset>> {
+        return this.getEntities<Asset>("Assets", query);
+    }
+
+    getJobs(query?: MediaQuery): Observable<QueryResult<Job>> {
+        return this.getEntities<Job>("Jobs", query);
+    }
+
+    getLocators(query: MediaQuery): Observable<QueryResult<Locator>> {
+        return this.getEntities<Locator>("Locators", query);
+    }
+
+    getAccessPolicies(query: MediaQuery): Observable<QueryResult<AccessPolicy>> {
+        return this.getEntities<AccessPolicy>("AccessPolicies", query);
+    }
+
+    getDeliveryPolicies(query: MediaQuery): Observable<QueryResult<DeliveryPolicy>> {
+        return this.getEntities<DeliveryPolicy>("AssetDeliveryPolicies", query);
+    }
+
+    getContentKeys(query: MediaQuery): Observable<QueryResult<ContentKey>> {
+        return this.getEntities<ContentKey>("ContentKeys", query);
     }
 }

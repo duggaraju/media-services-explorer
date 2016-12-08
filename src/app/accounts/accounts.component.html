@@ -10,7 +10,7 @@
       </ul>
     </div>
     <div class="col-md-8">
-      <account-details [account]="selectedAccount" ></account-details>
+      <account-details [account]="selectedAccount" (accountUpdated)="onUpdate($event)" ></account-details>
     </div>
   </div>
 </div>
