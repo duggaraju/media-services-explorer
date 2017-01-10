@@ -8,6 +8,7 @@ import { Angular2DataTableModule } from 'angular2-data-table';
 import { EntityComponent } from '../entity.component';
 import { Observable } from 'rxjs/Rx';
 import { QueryResult } from '../../media/queryresult';
+import { AccountService } from '../../account.service';
 
 @Component({
   selector: 'app-channels',
@@ -28,8 +29,8 @@ export class ChannelsComponent extends EntityComponent<Channel> {
       name: "Protocol"
     }];
 
-  constructor(activatedRoute:ActivatedRoute, mediaServiceFactory: MediaServiceFactory) {
-    super(activatedRoute, mediaServiceFactory);
+  constructor(activatedRoute:ActivatedRoute, mediaServiceFactory: MediaServiceFactory, accountService: AccountService) {
+    super(activatedRoute, mediaServiceFactory, accountService);
   }
 
   queryEntities(): Observable<QueryResult<Channel>> {

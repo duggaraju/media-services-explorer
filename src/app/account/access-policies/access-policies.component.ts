@@ -5,6 +5,7 @@ import { AccessPolicy } from '../../media/accesspolicy';
 import { QueryResult } from '../../media/queryresult';
 import { MediaServiceFactory } from '../../media/media.service.factory';
 import { Observable } from 'rxjs';
+import { AccountService } from '../../account.service';
 
 @Component({
   selector: 'app-locators',
@@ -27,8 +28,8 @@ export class AccessPoliciesComponent extends EntityComponent<AccessPolicy> {
       prop: "LastModified",
     }
   ]
-  constructor(activatedRoute: ActivatedRoute, mediaServiceFactory: MediaServiceFactory) {
-    super(activatedRoute, mediaServiceFactory);
+  constructor(activatedRoute: ActivatedRoute, mediaServiceFactory: MediaServiceFactory, accountService: AccountService) {
+    super(activatedRoute, mediaServiceFactory, accountService);
    }
 
    queryEntities(): Observable<QueryResult<AccessPolicy>> {

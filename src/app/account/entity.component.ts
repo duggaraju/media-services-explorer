@@ -7,6 +7,7 @@ import { MediaServiceFactory } from '../media/media.service.factory';
 import { MediaQuery } from '../media/mediaquery';
 import { QueryResult } from '../media/queryresult';
 import { Account } from '../account';
+import { AccountService } from '../account.service';
 import { Angular2DataTableModule } from 'angular2-data-table';
 
 export abstract class EntityComponent<T> implements OnInit {
@@ -20,13 +21,14 @@ export abstract class EntityComponent<T> implements OnInit {
   pageSize: number = 50;
 
 
-  constructor(private activatedRoute:ActivatedRoute, private mediaServiceFactory: MediaServiceFactory) {
+  constructor(private activatedRoute:ActivatedRoute, private mediaServiceFactory: MediaServiceFactory, private accountService: AccountService) {
   }
 
   ngOnInit(): void {
     this.activatedRoute.parent.params.subscribe((params: Params) => {
-      let account = JSON.parse(params["account"]) as MediaAccount;
-      this.mediaService = this.mediaServiceFactory.getMediaService(account);
+      let account = JSON.parse(params["account"]) as Account;
+      let mediaAccount = this.accountService.getMediaAccount(account);
+      this.mediaService = this.mediaServiceFactory.getMediaService(mediaAccount);
       this.refresh();
     });
   }

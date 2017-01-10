@@ -1,9 +1,9 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { LocationStrategy, HashLocationStrategy } from '@angular/common';
+import { LocationStrategy, HashLocationStrategy, APP_BASE_HREF } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule, JsonpModule } from '@angular/http';
-import { RouterModule, Route} from '@angular/router';
+import { RouterModule, Route } from '@angular/router';
 import { AppComponent } from './app.component';
 import { AccountComponent } from './account/account.component';
 import { AccountDetailsComponent } from './account-details/account-details.component';
@@ -18,6 +18,10 @@ import { LocatorsComponent } from './account/locators/locators.component';
 import { KeysComponent } from './account/keys/keys.component';
 import { AccessPoliciesComponent } from './account/access-policies/access-policies.component';
 import { DeliveryPoliciesComponent } from './account/delivery-policies/delivery-policies.component';
+import { AccountService } from './account.service';
+import { TreeModule } from 'angular2-tree-component';
+import { ArmService } from './arm/arm.service';
+import { AdalService } from './aad/adal.service';
 
 const routeTracing = false;
 
@@ -38,7 +42,9 @@ export const routes: Route[] = [
       { path: "deliverypolicies", component: DeliveryPoliciesComponent },
       { path: "keys", component: KeysComponent }
     ]
-  }];
+  },
+  { path: "**", component: AccountsComponent },
+];
 
 @NgModule({
   declarations: [
@@ -60,12 +66,16 @@ export const routes: Route[] = [
     BrowserModule,
     FormsModule,
     HttpModule,
-    JsonpModule,
-    RouterModule.forRoot(routes, {  enableTracing: routeTracing, useHash: true})
+    TreeModule,
+    RouterModule.forRoot(routes, {  enableTracing: routeTracing, useHash: false})
   ],
   providers: [
-    { provide: LocationStrategy, useClass: HashLocationStrategy },
-    MediaServiceFactory
+    // { provide: LocationStrategy, useClass: HashLocationStrategy },
+    // { provide:APP_BASE_HREF,  useValue: location.pathname },
+    MediaServiceFactory,
+    AccountService,
+    AdalService,
+    ArmService
   ],
   bootstrap: [AppComponent ]
 })

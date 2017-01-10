@@ -2,9 +2,11 @@ import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MediaServiceFactory } from '../../media/media.service.factory';
 import { Asset } from '../../media/asset';
+import { AssetOptions } from '../../media/asset-options';
 import { Observable } from 'rxjs/Rx';
 import { QueryResult } from '../../media/queryresult';
 import { EntityComponent } from '../entity.component';
+import { AccountService } from '../../account.service';
 
 @Component({
   selector: 'app-assets',
@@ -22,8 +24,8 @@ export class AssetsComponent extends EntityComponent<Asset> {
       prop: "Options"
     }];
 
-  constructor(activatedRoute:ActivatedRoute, mediaServiceFactory: MediaServiceFactory) {
-    super(activatedRoute, mediaServiceFactory);
+  constructor(activatedRoute:ActivatedRoute, mediaServiceFactory: MediaServiceFactory, accountService: AccountService) {
+    super(activatedRoute, mediaServiceFactory, accountService);
   }
 
   queryEntities(): Observable<QueryResult<Asset>> {

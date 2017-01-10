@@ -5,6 +5,7 @@ import { DeliveryPolicy } from '../../media/deliverypolicy';
 import { QueryResult } from '../../media/queryresult';
 import { MediaServiceFactory } from '../../media/media.service.factory';
 import { Observable } from 'rxjs';
+import { AccountService } from '../../account.service';
 
 @Component({
   selector: 'app-locators',
@@ -20,8 +21,9 @@ export class DeliveryPoliciesComponent extends EntityComponent<DeliveryPolicy> {
       prop: "Type"
     }
   ]
-  constructor(activatedRoute: ActivatedRoute, mediaServiceFactory: MediaServiceFactory) {
-    super(activatedRoute, mediaServiceFactory);
+  
+  constructor(activatedRoute: ActivatedRoute, mediaServiceFactory: MediaServiceFactory, accountService: AccountService) {
+    super(activatedRoute, mediaServiceFactory, accountService);
    }
 
    queryEntities(): Observable<QueryResult<DeliveryPolicy>> {

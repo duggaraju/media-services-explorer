@@ -1,7 +1,7 @@
 
 import { Injectable } from '@angular/core';
-import { AcsService } from './acs.service';
-import { Http, Headers, Jsonp, RequestOptions, RequestMethod, Request, Response, URLSearchParams } from '@angular/http';
+import { TokenProvider } from '../token.provider';
+import { Http, Headers, RequestOptions, RequestMethod, Request, Response, URLSearchParams } from '@angular/http';
 import { MediaAccount } from './mediaaccount';
 import { Asset } from './asset';
 import { Channel } from './channel';
@@ -13,18 +13,16 @@ import { DeliveryPolicy } from './deliverypolicy';
 import { StreamingEndpoint } from './streamingendpoint';
 import { Observable } from 'rxjs/Rx';
 import { MediaQuery } from "./mediaquery";
-import {QueryResult} from "./queryresult";
+import { QueryResult } from "./queryresult";
 
 @Injectable()
 export class MediaService {
-    private acsService: AcsService;
     private defaultHeaders: Headers;
     private apiUrl: string;
     
     public static readonly defaultVersion:string = "2.14";
 
-    constructor(private http: Http, private jsonp:Jsonp, private account: MediaAccount) {
-        this.acsService = new AcsService(http, jsonp, account);
+    constructor(private http: Http, private account: MediaAccount) {
         this.defaultHeaders = new Headers( {
             "Accept": "application/json",
             "x-ms-version": account.apiVersion || MediaService.defaultVersion
@@ -43,7 +41,7 @@ export class MediaService {
     private getApiUrl(): Observable<string> {
         if (!this.apiUrl) {
             console.log(`Checking ${this.account.apiUrl} to see if redirection is needed `);
-            return this.acsService.getAccessToken()
+            return this.account.tokenProvider.getAuthorizationHeaders()
                 .flatMap((headers: Headers) => this.http.get(this.account.apiUrl, this.getRequestOptions(headers)))
                 .map( (response: Response) =>  {
                     let  metadata = response.json();
@@ -59,7 +57,7 @@ export class MediaService {
      */
     getMetadata(): Observable<any> {
         return this.getApiUrl()
-            .flatMap(url => this.acsService.getAccessToken()) 
+            .flatMap(url => this.account.tokenProvider.getAuthorizationHeaders()) 
             .flatMap(headers =>  this.http.get(`${this.apiUrl}/$metadata`, this.getRequestOptions(headers)))
             .map(response => response.json());
     }
@@ -72,7 +70,7 @@ export class MediaService {
         return this.getApiUrl()
             .flatMap(url => {
                 entityUrl = `${url}/${entityName}`;
-                return this.acsService.getAccessToken()
+                return this.account.tokenProvider.getAuthorizationHeaders()
             }).flatMap(headers =>  {
                 var options = this.getRequestOptions(headers);
                 if (query) {

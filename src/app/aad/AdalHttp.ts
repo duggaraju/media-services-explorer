@@ -1,5 +1,3 @@
-/// <reference path="../typings/index.d.ts" />
-
 import { Injectable, NgModule, ModuleWithProviders } from '@angular/core';
 import { HttpModule, Http, ConnectionBackend, Request, RequestOptions, RequestOptionsArgs, Response, XHRBackend, Headers } from '@angular/http';
 import { Observable } from 'rxjs/RX';

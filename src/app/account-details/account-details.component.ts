@@ -1,7 +1,11 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Account } from "../account";
+import { AccountType } from "../account.type";
 import { MediaEnvironment } from '../mediaenvironment';
 import { Router } from "@angular/router";
+import { AccountService } from '../account.service';
+import { Node } from '../accounts/node';
+import { NodeType } from '../accounts/node.type';
 
 @Component({
   selector: 'account-details',
@@ -10,19 +14,36 @@ import { Router } from "@angular/router";
 })
 export class AccountDetailsComponent {
 
+  public MediaEnvironment = MediaEnvironment;
+  public NodeType = NodeType;
+
   @Input()
-  account: Account;
+  account: Node;
+
+  @Input()
+  readOnly: boolean = true;
 
   @Output()
   accountUpdated = new EventEmitter();
 
-  constructor(private router:Router) { }
+  @Output()
+  accountDeleted = new EventEmitter();
+
+  constructor(private router:Router, private accountService:AccountService) {
+  }
 
   onClick() {
-    if (this.account.environment != MediaEnvironment.Custom) {
-        Account.getSettingsForEnvironment(this.account);
-    }
-    this.router.navigate(["account", JSON.stringify(this.account)]);
+    let json = JSON.stringify(<Account> {
+      name: this.account.name,
+      accountType: <number> this.account.nodeType,
+      properties: this.account.properties
+    });
+    console.log(`JSON for account is ${json}`);
+    this.router.navigate(["account", json]);
+  }
+
+  onDelete() {
+    this.accountDeleted.emit(this.account);
   }
 
   onUpdate() {

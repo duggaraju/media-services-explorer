@@ -1,8 +1,9 @@
 
 import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions, Jsonp } from '@angular/http';
+import { Http, Headers, RequestOptions } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
-import { MediaAccount } from './mediaaccount';
+import { TokenProvider } from '../token.provider';
+import { AcsCredentials } from './acs.credentials';
 
 interface Token {
     access_token: string;
@@ -11,17 +12,17 @@ interface Token {
 }
 
 @Injectable()
-export class AcsService {
+export class AcsService implements TokenProvider {
     private token: Token;
     private baseUrl: string;
 
-    constructor(private http: Http, private jsonp:Jsonp, private account: MediaAccount) {
+    constructor(private http: Http, private credentials: AcsCredentials) {
     }
 
-    public getAccessToken(): Observable<Headers>    {
+    public getAuthorizationHeaders(): Observable<Headers>    {
         let now = new Date(Date.now() + 60000);
         if (!this.token || this.token.ExpirationDate < now) {
-            console.log(`Needs to refresh token for ${this.account.acsBaseAddress[0]}`);
+            console.log(`Needs to refresh token for ${this.credentials.primaryAuthAddress}`);
             return this.refreshToken()
             .map(token => this.getAuthHeader());
         }
@@ -29,8 +30,8 @@ export class AcsService {
     }
 
     private refreshToken(): Observable<Token> {
-        let url = this.account.acsBaseAddress[0] + "/v2/OAuth2-13";
-        let body = `grant_type=client_credentials&client_id=${this.account.accountName}&client_secret=${encodeURIComponent(this.account.accountKey)}&scope=${encodeURIComponent(this.account.scope)}`;
+        let url = this.credentials.primaryAuthAddress + "/v2/OAuth2-13";
+        let body = `grant_type=client_credentials&client_id=${this.credentials.accountName}&client_secret=${encodeURIComponent(this.credentials.primaryKey)}&scope=${encodeURIComponent(this.credentials.scope)}`;
 
         let headers = new Headers();
         headers.append("Content-Type", "application/x-www-form-urlencoded");
@@ -48,7 +49,7 @@ export class AcsService {
     }
 
     private getToken(url: string): Observable<Token> {
-        let body = `grant_type=client_credentials&client_id=${this.account.accountName}&client_secret=${encodeURIComponent(this.account.accountKey)}&scope=${encodeURIComponent(this.account.scope)}`;
+        let body = `grant_type=client_credentials&client_id=${this.credentials.accountName}&client_secret=${encodeURIComponent(this.credentials.primaryKey)}&scope=${encodeURIComponent(this.credentials.scope)}`;
 
         let headers = new Headers();
         headers.append("Content-Type", "application/x-www-form-urlencoded");
@@ -64,24 +65,6 @@ export class AcsService {
                 return this.token;
              });
 
-    }
-
-    private refreshTokenByJsonp(): Observable<Token> {
-        let url = this.account.acsBaseAddress[0] + "/v2/OAuth2-13";
-        let body = `grant_type=client_credentials&client_id=${this.account.accountName}&client_secret=${encodeURIComponent(this.account.accountKey)}&scope=${encodeURIComponent(this.account.scope)}`;
-
-        let headers = new Headers();
-        headers.append("Accept", "application/json");
-        
-        let options = new RequestOptions( { headers: headers, search: body } );
-        console.log("Refreshing token for " + url);
-        return this.jsonp.get(url, options)
-            .map(res =>  {
-                this.token = res.json() as Token;
-                this.token.ExpirationDate = new Date(Date.now() + (1000 * this.token.expires_in));
-                console.log(`got token for ${this.token.expires_in} seconds ${this.token.ExpirationDate}`);
-                return this.token;
-             });
     }
 
     private getAuthHeader(): Headers {

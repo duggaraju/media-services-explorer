@@ -1,31 +1,54 @@
 <div class="container" *ngIf="account">
-  <form>
-    <div class="form-group row">
+  <form #accountForm="ngForm" >
+    <div class="form-group row" [ngClass]="accountName.valid ? 'has-success' : 'has-danger'" >
       <label for="accountName" class="col-sm-3 col-form-label" >Account Name</label>
       <div class="col-sm-9">
-        <input type="text" class="col-sm-9 form-control" id="accountName" name="accountName" [(ngModel)]="account.accountName" />
+        <input type="text" class="col-sm-9 form-control" id="accountName" name="accountName" [(ngModel)]="account.name" required [readonly]="readOnly" #accountName="ngModel" />
       </div>
     </div>
-    <div class="form-group row">
-      <label for="accountKey" class="col-sm-3 col-form-label">Account Key</label>
-      <div class="col-sm-9">
-        <input class="form-control" type="text" id="accountKey" name="accountKey" [(ngModel)]="account.accountKey"/>
+    <fieldset *ngIf="account.nodeType !== NodeType.ArmAccount" >
+      <div class="form-group row" [ngClass]="accountKey.valid ? 'has-success' : 'has-danger'" >
+        <label for="accountKey" class="col-sm-3 col-form-label">Account Key</label>
+        <div class="col-sm-9">
+          <input class="form-control" type="text" id="accountKey" name="accountKey" [(ngModel)]="account.properties.primaryKey" required [readonly]="readOnly" #accountKey="ngModel" />
+        </div>
       </div>
-    </div>
-    <div class="form-group row">
-      <label class="col-sm-3 col-form-label"  for="environment" >Environment</label>
-      <div class="col-sm-9">
-        <select class="form-control" [(ngModel)]="account.mediaEnvironment" name="environment" >
-          <option>Production</option>
-          <option>Mooncake</option>
-          <option>Fairfax</option>
-          <option>Custom</option>
-        </select>
+      <div class="form-group row" [ngClass]="environment.valid ? 'has-success' : 'has-danger'" >
+        <label class="col-sm-3 col-form-label"  for="environment" >Environment</label>
+        <div class="col-sm-9">
+          <select class="form-control" [(ngModel)]="account.properties.mediaEnvironment" name="environment" required [disabled]="readOnly" #environment="ngModel" >
+            <option [ngValue]="MediaEnvironment.Production">Production</option>
+            <option ng-value="MediaEnvironment.Mooncake" >Mooncake</option>
+            <option ng-value="MediaEnvironment.Fairfax" >Fairfax</option>
+            <option [ngValue]="MediaEnvironment.Custom" >Custom</option>
+          </select>
+        </div>
       </div>
-    </div>
+    </fieldset>
+    <fieldset *ngIf="account.properties.mediaEnvironment === MediaEnvironment.Custom" >
+      <div class="form-group row">
+        <label for="scope" class="col-sm-3 col-form-label" for="apiEndpoint" >API Endpoint</label>
+        <div class="col-sm-9">
+          <input class="form-control" type="text" id="apiEndpoint" name="apiEndpoint" [(ngModel)]="account.properties.apiEndpoints[0].endpoint" [readonly]="readOnly" required/>
+        </div>
+      </div>
+      <div class="form-group row" >
+        <label for="scope" class="col-sm-3 col-form-label" for="scope" >Scope</label>
+        <div class="col-sm-9">
+          <input class="form-control" type="text" id="scope" name="scope" [(ngModel)]="account.properties.scope" required #scope="ngModel" />
+        </div>
+      </div>
+      <div class="form-group row">
+        <label for="acsAddress" class="col-sm-3 col-form-label" for="acsAddress" >Account Key</label>
+        <div class="col-sm-9">
+          <input class="form-control" type="text" id="acsAddress" name="acsAddress" [(ngModel)]="account.properties.primaryAuthEndpoint" [readonly]="readOnly"/>
+        </div>
+      </div>
+    </fieldset>
     <div class="form-group row">
-        <button class="btn btn-primary" (click)="onUpdate()" >Save</button>
-        <button class="btn btn-primary" (click)="onClick()">Connect</button>
+        <button class="btn btn-primary" (click)="onUpdate()" [disabled]="readOnly || !accountForm.valid" >Save</button>
+        <button class="btn btn-danger" (click)="onDelete()" [disabled]="readOnly" >Delete</button>
+        <button class="btn btn-primary" (click)="onClick()" [disabled]="!accountForm.valid" >Connect</button>
     </div>
   </form>
 </div>

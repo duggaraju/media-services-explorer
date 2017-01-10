@@ -2,15 +2,22 @@
   <div class="row">
     <div class="col-md-4">
       <h2>Accounts</h2>
-      <ul class="list-group">
-        <li class="list-group-item"
-          *ngFor="let account of accounts"
-          [class.active]="account === selectedAccount"
-          (click)="onSelect(account)" >{{account.accountName}}</li>
-      </ul>
+      <Tree [nodes]="nodes"
+          [options]="treeOptions"
+          (onActivate)="onActivate($event.node)" >
+          <template #treeNodeTemplate let-node>
+              <span title="{{node.data.subTitle}}">{{ node.data.name }}</span>
+              <button *ngIf="!node.isRoot && !node.isLeaf" (click)="refresh($event, node)" ><i class="fa fa-refresh" aria-hidden="true"></i></button> 
+              <button *ngIf="node.isRoot" (click)="add($event, node)"><i class="fa fa-plus"></i></button>
+          </template>
+          <template #loadingTemplate>Loading, please hold....</template>
+      </Tree>
     </div>
     <div class="col-md-8">
-      <account-details [account]="selectedAccount" (accountUpdated)="onUpdate($event)" ></account-details>
+      <account-details [account]="selectedAccount" [readOnly]="readOnly" (accountUpdated)="onUpdate($event)" (accountDeleted)="onDelete($event)" ></account-details>
     </div>
+  </div>
+  <div class="dropdown-menu" >
+    <a class="dropdown-item" href="#">Delete</a>
   </div>
 </div>

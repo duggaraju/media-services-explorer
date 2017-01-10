@@ -1,9 +1,9 @@
+import { TokenProvider } from '../token.provider';
+
 export interface MediaAccount
 {
+    tokenProvider: TokenProvider;
     accountName: string;
-    accountKey: string;
     apiUrl: string;
-    scope: string;
-    acsBaseAddress: string[];
     apiVersion?: string;
 }

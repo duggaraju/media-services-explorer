@@ -5,6 +5,7 @@ import { Locator } from '../../media/locator';
 import { QueryResult } from '../../media/queryresult';
 import { MediaServiceFactory } from '../../media/media.service.factory';
 import { Observable } from 'rxjs';
+import { AccountService } from '../../account.service';
 
 @Component({
   selector: 'app-locators',
@@ -26,8 +27,9 @@ export class LocatorsComponent extends EntityComponent<Locator> {
       name: "Expiration Date"
     }
   ]
-  constructor(activatedRoute: ActivatedRoute, mediaServiceFactory: MediaServiceFactory) {
-    super(activatedRoute, mediaServiceFactory);
+
+  constructor(activatedRoute: ActivatedRoute, mediaServiceFactory: MediaServiceFactory, accountService: AccountService) {
+    super(activatedRoute, mediaServiceFactory, accountService);
    }
 
    queryEntities(): Observable<QueryResult<Locator>> {
