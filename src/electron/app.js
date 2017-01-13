@@ -17,12 +17,14 @@ function createWindow() {
         }
     });
 
-    // let startUrl = `file://${__dirname}/app/index.html`;
+    let startUrl = 'http://localhost:4200/index.html';
+    /*
     let startUrl = url.format({
         pathname: path.join(__dirname, 'index.html'),
         protocol: 'file:',
         slashes: true
         });
+    */
     appWindow.loadURL(startUrl); 
 
     globalShortcut.register('CmdOrCtrl+Shift+D', ()=> {

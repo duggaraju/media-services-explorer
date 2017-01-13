@@ -16,6 +16,7 @@ export class AccountDetailsComponent {
 
   public MediaEnvironment = MediaEnvironment;
   public NodeType = NodeType;
+  environments = Object.keys(MediaEnvironment).filter(x => !isNaN(Number(x)));
 
   @Input()
   account: Node;

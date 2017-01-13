@@ -74,7 +74,7 @@ export class AccountsComponent implements OnInit {
 
   private onUpdate(account:Node): void {
     let nodeType: number = account.nodeType;
-    if (!this.accounts.find(element => account.properties === element)) {
+    if (!this.accounts.find(element => account.properties === element.properties)) {
       console.log(`Creating a new account name:${account.name} of type:${NodeType[nodeType]}`);
       this.nodes[nodeType].children.push(account);
       this.accounts.push(<Account> {
@@ -92,6 +92,7 @@ export class AccountsComponent implements OnInit {
 
   onDelete(node:Node): void {
     let nodeType: number = node.nodeType;
+    console.log(`Deleting account name:${node.name} of type:${NodeType[nodeType]}`);
     let account = this.accounts.find(element => node.properties === element);
     if (account) {
       console.log(`Deleting account name:${account.name} of type:${NodeType[nodeType]}`);
@@ -115,7 +116,7 @@ export class AccountsComponent implements OnInit {
     let account = node.data as Node;
     account.onActivate().subscribe(x => {
       this.selectedAccount = node.isLeaf ? account : null; 
-      this.readOnly = account.nodeType !== NodeType.ArmAccount;   
+      this.readOnly = account.nodeType === NodeType.ArmAccount;   
     });
   }
 

@@ -1,6 +1,6 @@
 
 import { Injectable } from '@angular/core';
-import { Http, Headers, RequestOptions } from '@angular/http';
+import { Http, Headers, RequestOptions, URLSearchParams, QueryEncoder } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { TokenProvider } from '../token.provider';
 import { AcsCredentials } from './acs.credentials';
@@ -32,6 +32,11 @@ export class AcsService implements TokenProvider {
     private refreshToken(): Observable<Token> {
         let url = this.credentials.primaryAuthAddress + "/v2/OAuth2-13";
         let body = `grant_type=client_credentials&client_id=${this.credentials.accountName}&client_secret=${encodeURIComponent(this.credentials.primaryKey)}&scope=${encodeURIComponent(this.credentials.scope)}`;
+        let params = new URLSearchParams("", new QueryEncoder());
+        params.set("grant_type", "client_credentials");
+        params.set("scope", this.credentials.scope);
+        params.set("client_id", this.credentials.accountName);
+        params.set("client_secret", this.credentials.primaryKey);
 
         let headers = new Headers();
         headers.append("Content-Type", "application/x-www-form-urlencoded");
@@ -39,32 +44,13 @@ export class AcsService implements TokenProvider {
         
         let options = new RequestOptions( { headers: headers } );
         console.log("Refreshing token for " + url);
-        return this.http.post(url, body, options)
+        return this.http.post(url, params.toString(), options)
             .map(res =>  {
                 this.token = res.json() as Token;
                 this.token.ExpirationDate = new Date(Date.now() + (1000 * this.token.expires_in));
                 console.log(`got token at ${new Date()} for ${this.token.expires_in} seconds expiring at ${this.token.ExpirationDate}`);
                 return this.token;
              });
-    }
-
-    private getToken(url: string): Observable<Token> {
-        let body = `grant_type=client_credentials&client_id=${this.credentials.accountName}&client_secret=${encodeURIComponent(this.credentials.primaryKey)}&scope=${encodeURIComponent(this.credentials.scope)}`;
-
-        let headers = new Headers();
-        headers.append("Content-Type", "application/x-www-form-urlencoded");
-        headers.append("Accept", "application/json");
-        
-        let options = new RequestOptions( { headers: headers } );
-        console.log("Refreshing token for " + url);
-        return this.http.post(url + "/v2/OAuth2-13", body, options)
-            .map(res =>  {
-                this.token = res.json() as Token;
-                this.token.ExpirationDate = new Date(Date.now() + (1000 * this.token.expires_in));
-                console.log(`got token for ${this.token.expires_in} seconds ${this.token.ExpirationDate}`);
-                return this.token;
-             });
-
     }
 
     private getAuthHeader(): Headers {

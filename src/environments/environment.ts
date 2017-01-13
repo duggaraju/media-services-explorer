@@ -6,7 +6,9 @@
 export const environment = {
   production: false,
   aadAuthority: "https://login.microsoftonline.com/",
-  aadTenant: "microsoft.onmicrosoft.com",
-  aadClientId: "",
-  graphResource: "https://graph.microsoft.com"
+  aadTenant: "common",
+  aadClientId: "789b7daa-39aa-4a80-925c-5af317dcbef1",
+  graphResource: "https://graph.microsoft.com",
+  adalLogging: true,
+  adalLogLevel: 3,
 };
