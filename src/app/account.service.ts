@@ -26,7 +26,7 @@ export class AccountService {
   private getAcsAccount(account: Account): MediaAccount {
     let properties = <AcsAccountProperties> account.properties;
     if (properties.mediaEnvironment !== MediaEnvironment.Custom) {
-      let settings = this.getSettingsForEnvironment(properties.mediaEnvironment);
+      let settings = this.acsEnvironments.get(properties.mediaEnvironment);
       Object.assign(properties, settings);
     }
     return <MediaAccount> {
@@ -44,14 +44,6 @@ export class AccountService {
       primaryAuthAddress: properties.primaryAuthAddress
     }
   }
-
-  public getSettingsForEnvironment(mediaEnvironment: MediaEnvironment): AcsAccountProperties {
-      let template = this.acsEnvironments.get(mediaEnvironment);
-      if (template) {
-          console.log(`Found settings for ${MediaEnvironment[mediaEnvironment]} ${template.scope}, ${template.endpoints[0].endpoint}`);
-      }
-      return template;
-  };
 
   readonly acsEnvironments:Map<MediaEnvironment, AcsAccountProperties> = 
     new Map<MediaEnvironment, AcsAccountProperties>()
