@@ -6,18 +6,14 @@ let appWindow;
 
 function createWindow() {
     appWindow = new BrowserWindow({
-        width: 800,
-        height: 800,
-        minWidth: 700,
-        minHeight: 700,
         fullscreenable: true,
-        "web-preferences": {
-            "web-security": false,
-            "node-integration": false
+        "webPreferences": {
+            "webSecurity": false,
+            "nodeIntegration": false
         }
     });
 
-    let startUrl = 'http://localhost:4200/index.html';
+    let startUrl = process.argv[2] || 'http://localhost:4200/index.html';
     /*
     let startUrl = url.format({
         pathname: path.join(__dirname, 'index.html'),
@@ -34,7 +30,12 @@ function createWindow() {
     appWindow.on('closed', () => {
         appWindow = null;
     });
+
+    appWindow.once('show', () => {
+        appWindow.maximize()
+    });
 }
+
 app.on('ready', createWindow);
 
 app.on('window-all-closed', () => {
@@ -47,5 +48,12 @@ app.on('window-all-closed', () => {
 app.on('activate', () => {
     if (appWindow === null) {
         createWindow();
+    }
+});
+
+app.on('browser-window-created', (event, window) => {
+    console.log('Window created ' + window.getTitle());
+    if (window ===appWindow) {
+        window.maximize();
     }
 });

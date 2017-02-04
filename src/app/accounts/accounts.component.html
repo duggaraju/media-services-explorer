@@ -14,7 +14,12 @@
       </Tree>
     </div>
     <div class="col-md-8">
-      <account-details [account]="selectedAccount" [readOnly]="readOnly" (accountUpdated)="onUpdate($event)" (accountDeleted)="onDelete($event)" ></account-details>
+      <account-details 
+          [account]="selectedAccount"
+          [readOnly]="readOnly"
+          [newAccount]="newAccount"
+          (accountUpdated)="onUpdate($event)"
+          (accountDeleted)="onDelete($event)" ></account-details>
     </div>
   </div>
   <div class="dropdown-menu" >

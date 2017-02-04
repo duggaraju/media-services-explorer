@@ -6,18 +6,18 @@
         <input type="text" class="col-sm-9 form-control" id="accountName" name="accountName" [(ngModel)]="account.name" required [readonly]="readOnly" #accountName="ngModel" />
       </div>
     </div>
-    <fieldset *ngIf="account.nodeType !== NodeType.ArmAccount" >
+    <fieldset *ngIf="account.accountType !== AccountType.ArmAccount" >
       <div class="form-group row" [ngClass]="accountKey.valid ? 'has-success' : 'has-danger'" >
         <label for="accountKey" class="col-sm-3 col-form-label">Account Key</label>
         <div class="col-sm-9">
           <input class="form-control" type="text" id="accountKey" name="accountKey" [(ngModel)]="account.properties.primaryKey" required [readonly]="readOnly" #accountKey="ngModel" />
         </div>
       </div>
-      <div class="form-group row" [ngClass]="environment.valid ? 'has-success' : 'has-danger'" >
+      <div class="form-group row" [ngClass]="environment ? 'has-success' : 'has-danger'" >
         <label class="col-sm-3 col-form-label"  for="environment" >Environment</label>
         <div class="col-sm-9">
           <select class="form-control" [(ngModel)]="account.properties.mediaEnvironment" id="environment" name="environment" required [disabled]="readOnly" #environment="ngModel" >
-            <option *ngFor="let env of environments" [value]="env">{{MediaEnvironment[env]}}</option>
+            <option *ngFor="let env of environments" [ngValue]="env">{{MediaEnvironment[env]}}</option>
           </select>
         </div>
       </div>
@@ -44,8 +44,9 @@
     </fieldset>
     <div class="form-group row">
         <button class="btn btn-primary" (click)="onUpdate()" [disabled]="readOnly || !accountForm.valid" >Save</button>
-        <button class="btn btn-danger" (click)="onDelete()" [disabled]="readOnly" >Delete</button>
-        <button class="btn btn-primary" (click)="onClick()" [disabled]="!accountForm.valid" >Connect</button>
+        <button *ngIf="!newAccount" class="btn btn-danger" (click)="onDelete()" [disabled]="readOnly" >Delete</button>
+        <button *ngIf="newAccount" class="btn btn-danger" (click)="onDelete()" [disabled]="readOnly" >Cancel</button>
+        <button *ngIf="account.accountType !== AccountType.ArmAccount" class="btn btn-primary" (click)="onClick()" [disabled]="!accountForm.valid" >Connect</button>
     </div>
   </form>
 </div>

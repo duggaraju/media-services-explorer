@@ -1,39 +1,19 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
-// import * as adalLib from 'adal-angular';
+import * as adalLib from 'adal-angular';
 import { TokenProvider } from '../token.provider';
 import { AadTokenProvider } from './aad.token.provider';
 import { environment } from '../../environments/environment';
 
 let constructorFn: adal.AuthenticationContextStatic = AuthenticationContext;
-declare let Logging: adal.Logging;
 
 @Injectable()
 export class AdalService {
 
   private context: adal.AuthenticationContext;
 
-  constructor() {
-    if (environment.adalLogging) {
-      Logging = {
-        log: (message) => console.log(message),
-        level: environment.adalLogLevel
-      };
-    }
-  }
-
-  public init(username?: string) : void {
-    if (!this.context) {
-      let config:adal.Config = {
-              clientId: environment.aadClientId,
-              tenant: environment.aadTenant,
-              extraQueryParameter: `login_hint=${encodeURIComponent(username)}`
-      };    
-      (<any>config).popUp = true;
-      // (<any>config).isAngular = true;
-      //constructorFn = adalLib.constructor;
-      this.context = new constructorFn(config);      
-    }
+  constructor(private config: adal.Config) {
+    this.context = new constructorFn(config);
   }
 
   public login(): void {

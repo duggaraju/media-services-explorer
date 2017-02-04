@@ -1,3 +1,4 @@
-export interface DeliveryPolicy {
-    Id: string;
+import { MediaEntity } from './media.entity';
+
+export interface DeliveryPolicy extends MediaEntity {
 }

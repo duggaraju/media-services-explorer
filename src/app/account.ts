@@ -2,9 +2,13 @@ import { AccountType } from './account.type';
 import { MediaEnvironment } from './mediaenvironment';
 
 export class Account  {
-    public accountType = AccountType.AcsAccount;
+    public accountType: AccountType;
     public name: string;
     public properties: { [name:string] : any } = {};
+
+    public constructor(accountType?: AccountType) {
+      this.accountType = accountType;
+    }
 }
 
 export interface ApiEndpoint {
@@ -15,11 +19,11 @@ export interface ApiEndpoint {
 
 export interface AcsAccountProperties {
   mediaEnvironment?: MediaEnvironment;
-  endpoints: ApiEndpoint[],
+  apiEndpoints: ApiEndpoint[],
   primaryKey?: string;
   secondaryKey?: string;
   scope?: string;
-  primaryAuthAddress?: string;
-  secondaryAuthAddress?: string;
+  primaryAuthEndpoint?: string;
+  secondaryAuthEndpoint?: string;
 }
 

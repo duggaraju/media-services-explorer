@@ -32,19 +32,11 @@ export class AcsService implements TokenProvider {
     private refreshToken(): Observable<Token> {
         let url = this.credentials.primaryAuthAddress + "/v2/OAuth2-13";
         let body = `grant_type=client_credentials&client_id=${this.credentials.accountName}&client_secret=${encodeURIComponent(this.credentials.primaryKey)}&scope=${encodeURIComponent(this.credentials.scope)}`;
-        let params = new URLSearchParams("", new QueryEncoder());
-        params.set("grant_type", "client_credentials");
-        params.set("scope", this.credentials.scope);
-        params.set("client_id", this.credentials.accountName);
-        params.set("client_secret", this.credentials.primaryKey);
 
-        let headers = new Headers();
-        headers.append("Content-Type", "application/x-www-form-urlencoded");
-        headers.append("Accept", "application/json");
-        
+        let headers = new Headers( { "Content-Type": "application/x-www-form-urlencoded"});
         let options = new RequestOptions( { headers: headers } );
         console.log("Refreshing token for " + url);
-        return this.http.post(url, params.toString(), options)
+        return this.http.post(url, body, options)
             .map(res =>  {
                 this.token = res.json() as Token;
                 this.token.ExpirationDate = new Date(Date.now() + (1000 * this.token.expires_in));

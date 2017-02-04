@@ -1,6 +1,7 @@
-export interface Job {
+import { MediaEntity } from './media.entity';
+
+export interface Job extends MediaEntity {
     Name: string;
-    Id: string;
     State: string;
     LastModified: Date;
     Created: Date;

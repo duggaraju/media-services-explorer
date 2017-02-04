@@ -16,11 +16,66 @@ export class AccountService {
 
   constructor(private http:Http) { }
 
+  private accounts: Account[];
+
+  public getAccounts(): Account[] {
+    if (!this.accounts) {
+      this.loadAccounts();
+    }
+    return this.accounts;
+  }
+
+  public deleteAccount(account: Account): void {
+    console.log(`Looking to delete account name:${account.name} of type:${AccountType[account.accountType]}`);
+    let index = this.accounts.indexOf(account);
+    if (index != -1) {
+      console.log(`Deleting account name:${account.name} of type:${AccountType[account.accountType]}`);
+      this.accounts.splice(index, 1);
+      this.saveAccounts();
+    }
+  }
+
+  public updateAccount(account: Account): boolean {
+    let added = false;
+    let actualAccount = this.accounts.find(element => element === account);
+    if (actualAccount) {
+      console.log(`Updating account:${account.name} type:${AccountType[account.accountType]}`)
+    } else {
+      console.log(`Adding account:${name} type:${AccountType[account.accountType]}`)
+      this.accounts.push(account);
+      added = true;
+    }
+    this.saveAccounts();
+    return added;
+  }
+
   public getMediaAccount(account:Account): MediaAccount {
     switch(account.accountType) {
         case AccountType.AcsAccount:
+        case AccountType.ArmAccount:
             return this.getAcsAccount(account);
+        case AccountType.AadAccount:
+          throw new Error("Not yet supported!");
     }
+  }
+
+  private loadAccounts(): void {
+    var accounts = localStorage.getItem("accounts");
+    console.log(`found accounts in local storage ${accounts}`);
+    if (accounts) {
+      try {
+        this.accounts = JSON.parse(accounts) as Account[];
+      }
+      catch(error) {
+        console.log(`Invalid JSON saved so ignoring it. ${error}`);
+      }
+    }
+    console.log(`Total accounts: ${this.accounts.length}`);
+  }
+
+  private saveAccounts(): void{
+    console.log(`Saving Accounts.... Total: ${this.accounts.length}`);
+    localStorage.setItem("accounts", JSON.stringify(this.accounts));    
   }
 
   private getAcsAccount(account: Account): MediaAccount {
@@ -31,7 +86,7 @@ export class AccountService {
     }
     return <MediaAccount> {
       accountName: account.name,
-      apiUrl: properties.endpoints[0].endpoint,
+      apiUrl: properties.apiEndpoints[0].endpoint,
       tokenProvider: new AcsService(this.http, this.getAcsCredentials(account, properties))
     };
   }
@@ -41,25 +96,25 @@ export class AccountService {
       accountName: account.name,
       primaryKey: properties.primaryKey,
       scope: properties.scope,
-      primaryAuthAddress: properties.primaryAuthAddress
+      primaryAuthAddress: properties.primaryAuthEndpoint
     }
   }
 
   readonly acsEnvironments:Map<MediaEnvironment, AcsAccountProperties> = 
     new Map<MediaEnvironment, AcsAccountProperties>()
         .set(MediaEnvironment.Production, {
-            endpoints: [ { endpoint:"https://media.windows.net" }],
+            apiEndpoints: [ { endpoint:"https://media.windows.net" }],
             scope: "urn:WindowsAzureMediaServices",
-            primaryAuthAddress:  "https://wamsprodglobal001acs.accesscontrol.windows.net",
-            secondaryAuthAddress: "https://wamsprodglobal002acs.accesscontrol.windows.net"
+            primaryAuthEndpoint:  "https://wamsprodglobal001acs.accesscontrol.windows.net",
+            secondaryAuthEndpoint: "https://wamsprodglobal002acs.accesscontrol.windows.net"
         }).set(MediaEnvironment.Mooncake, {
-            endpoints: [ { endpoint: "https://media.chinacloud.cn" }],
+            apiEndpoints: [ { endpoint: "https://media.chinacloud.cn" }],
             scope: "urn:WindowsAzureMediaServices",
-            primaryAuthAddress: "https://"
+            primaryAuthEndpoint: "https://"
         }).set(MediaEnvironment.BlackForest, {
-          endpoints: [],
+          apiEndpoints: [],
           scope: "urn.WindowsAzureMediaServices",
-          primaryAuthAddress: "",
-          secondaryAuthAddress: ""
+          primaryAuthEndpoint: "",
+          secondaryAuthEndpoint: ""
         });  
 }

@@ -5,12 +5,12 @@ import { Account } from '../account';
 import { ArmService } from '../arm/arm.service';
 import { AzureSubscriptionNode } from './azure.subscription.node';
 import { NodeType } from './node.type';
+import { Subscription } from '../arm/subscription';
 
 export class AzureAccountNode extends Node {
     
-    constructor(public account:Account, private adalService:AdalService, private armService:ArmService) {
+    constructor(public account:Account, public adalService:AdalService, private armService:ArmService) {
         super(account.name, NodeType.AzureAccount, account);
-        this.adalService.init(this.name);
     }
 
     public loadChildren(): Promise<Node[]> {
@@ -37,7 +37,7 @@ export class AzureAccountNode extends Node {
         return Observable.of(true);
     }
 
-    private loadSubscriptions(): Observable<any> {
+    private loadSubscriptions(): Observable<Subscription[]> {
         console.log("loading subscriptions...");
         return this.armService.getSubscriptions(this.adalService);
     }

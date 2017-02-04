@@ -9,8 +9,11 @@ import { ArmService } from '../arm/arm.service';
 import { ITreeOptions, TreeNode, TreeComponent, IActionMapping } from 'angular2-tree-component';
 import { Observable } from 'rxjs/Rx';
 import { Node } from './node';
+import { RootNode } from './root.node';
 import { NodeType } from './node.type';
 import { AdalService } from '../aad/adal.service';
+import { AdalServiceFactory } from '../aad/adal.service.factory';
+import { AccountService } from '../account.service';
 
 @Component({
   selector: 'accounts',
@@ -22,14 +25,14 @@ export class AccountsComponent implements OnInit {
   @ViewChild(TreeComponent)
   private tree: TreeComponent;
 
-  accounts: Account[] = [];
-  selectedAccount: Node;
+  selectedAccount: Account;
+  readOnly: boolean = false;
+  newAccount: boolean = false;
 
-  readOnly: boolean = true;
   readonly nodes: Node[] = [
-    new Node("Classic Accounts"),
-    new Node("Azure AD Accounts"),
-    new Node("Azure Accounts")
+    new RootNode("Classic Accounts"),
+    new RootNode("Azure AD Accounts"),
+    new RootNode("Azure Accounts")
   ];
 
   treeOptions: ITreeOptions = {
@@ -41,72 +44,59 @@ export class AccountsComponent implements OnInit {
     }
   }
 
-  constructor(private activatedRoute:ActivatedRoute, private adalService:AdalService, private armService:ArmService) {
-    this.adalService.init();
-    this.activatedRoute.fragment.subscribe(fragment => { 
-      console.log("Fragment is " + fragment); 
-      this.adalService.handleWindowCallback(fragment);
-    });
+  constructor(private activatedRoute:ActivatedRoute, private adalServiceFactory:AdalServiceFactory, private armService:ArmService, private accountService: AccountService) {
     this.loadAccounts();
+    this.activatedRoute.fragment.subscribe(fragment => { 
+      if (fragment) {
+        console.log("Fragment is " + fragment);
+        this.nodes[NodeType.ArmAccount].children.forEach((node) => {
+          var account =  node as AzureAccountNode;
+          account.adalService.handleWindowCallback(fragment);
+        })
+      }
+    });
   }
 
   private loadAccounts(): void {
-    var accounts = localStorage.getItem("accounts");
-    console.log(`found accounts in local storage ${accounts}`);
-    if (accounts) {
-      try {
-        this.accounts = JSON.parse(accounts) as Account[];
-      }
-      catch(error) {
-        console.log(`Invalid JSON saved so ignoring it. ${error}`);
-      }
-    }
-    console.log(`Total accounts: ${this.accounts.length}`);
-    this.nodes[0].children = this.createNodes(AccountType.AcsAccount, account => new MediaAccountNode(account));
-    this.nodes[1].children = this.createNodes(AccountType.AadAccount, account => new MediaAccountNode(account));
-    this.nodes[2].children = this.createNodes(AccountType.ArmAccount, account => new AzureAccountNode(account, this.adalService, this.armService));
-    
+    let accounts = this.accountService.getAccounts();
+    this.nodes[0].children = this.createNodes(accounts, AccountType.AcsAccount, account => new MediaAccountNode(account));
+    this.nodes[1].children = this.createNodes(accounts, AccountType.AadAccount, account => new MediaAccountNode(account));
+    this.nodes[2].children = this.createNodes(accounts, AccountType.ArmAccount, account => 
+      new AzureAccountNode(
+        account, 
+        this.adalServiceFactory.createContextForUser(account.name),
+        this.armService));   
   }
 
-  private createNodes(accountType: AccountType, createFunction:(account:Account) => Node): Node[] {
-    return this.accounts.filter( account => account.accountType === accountType).map(createFunction);
+  private createNodes(accounts: Account[], accountType: AccountType, createFunction:(account:Account) => Node): Node[] {
+    return accounts.filter( account => account.accountType === accountType).map(createFunction);
   }
 
-  private onUpdate(account:Node): void {
-    let nodeType: number = account.nodeType;
-    if (!this.accounts.find(element => account.properties === element.properties)) {
-      console.log(`Creating a new account name:${account.name} of type:${NodeType[nodeType]}`);
-      this.nodes[nodeType].children.push(account);
-      this.accounts.push(<Account> {
-        name: account.name,
-        accountType: nodeType,
-        properties: account.properties
-      });
+  private onUpdate(account:Account): void {
+    let added = this.accountService.updateAccount(account);
+    if (added) {
+      let nodeType: number = account.accountType;
+      let node = account.accountType == AccountType.ArmAccount ? 
+        new AzureAccountNode(account, this.adalServiceFactory.createContextForUser(account.name), this.armService) :
+        new MediaAccountNode(account);
+      console.log(`Creating a new node name:${node.name} of type:${NodeType[nodeType]}`);
+      this.nodes[nodeType].children.push(node);
       this.tree.treeModel.update();
-    } else {
-      console.log(`Updated account ${account.name} of type:${NodeType[nodeType]}`);      
+      this.newAccount = false;
     }
-    console.log(`Saving Accounts.... Total: ${this.accounts.length}`);
-    localStorage.setItem("accounts", JSON.stringify(this.accounts));
   }
 
-  onDelete(node:Node): void {
-    let nodeType: number = node.nodeType;
-    console.log(`Deleting account name:${node.name} of type:${NodeType[nodeType]}`);
-    let account = this.accounts.find(element => node.properties === element);
-    if (account) {
-      console.log(`Deleting account name:${account.name} of type:${NodeType[nodeType]}`);
-      let nodes = this.nodes[nodeType].children;
-      let index = nodes.indexOf(node);
+  onDelete(account:Account): void {
+    console.log(`Deleting account name:${account.name} of type:${AccountType[account.accountType]}`);
+    this.accountService.deleteAccount(account);
+    let nodes = this.nodes[account.accountType].children;
+    let index = nodes.findIndex(node => node.name === account.name);
+    if (index != -1) {
+      console.log(`removing node from the tree...`)
       nodes.splice(index, 1);
-
-      index = this.accounts.indexOf(account);
-      this.accounts.splice(index, 1);
       this.tree.treeModel.update();
     }
-    console.log(`Saving Accounts.... Total: ${this.accounts.length}`);
-    localStorage.setItem("accounts", JSON.stringify(this.accounts));
-    
+    this.selectedAccount == null;
   }
 
   ngOnInit() {
@@ -115,7 +105,8 @@ export class AccountsComponent implements OnInit {
   private onActivate(node:TreeNode): void {
     let account = node.data as Node;
     account.onActivate().subscribe(x => {
-      this.selectedAccount = node.isLeaf ? account : null; 
+      this.selectedAccount = account.account;
+      this.newAccount = false;
       this.readOnly = account.nodeType === NodeType.ArmAccount;   
     });
   }
@@ -129,8 +120,11 @@ export class AccountsComponent implements OnInit {
   private add($event, node: TreeNode) {
     $event.stopPropagation();
     let data = node.data as Node;
-    this.selectedAccount = new Node("",this.nodes.indexOf(data));
+    let accountType: number = this.nodes.indexOf(data);
+    this.selectedAccount = new Account(accountType);
     this.readOnly = false;
+    this.newAccount = true;
+    console.log(`Adding a new account of type:${AccountType[accountType]}`);
   }
 
   private onContextMenu(tree, node, $event: Event) {

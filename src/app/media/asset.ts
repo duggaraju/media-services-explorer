@@ -1,7 +1,7 @@
 import { AssetOptions } from './asset-options';
+import { MediaEntity } from './media.entity';
 
-export interface Asset {
-    Id: string;
+export interface Asset extends MediaEntity {
     Name: string;
     LastModified: Date;
     Created: Date;

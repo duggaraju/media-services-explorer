@@ -4,8 +4,6 @@ import { AccountType } from "../account.type";
 import { MediaEnvironment } from '../mediaenvironment';
 import { Router } from "@angular/router";
 import { AccountService } from '../account.service';
-import { Node } from '../accounts/node';
-import { NodeType } from '../accounts/node.type';
 
 @Component({
   selector: 'account-details',
@@ -14,15 +12,20 @@ import { NodeType } from '../accounts/node.type';
 })
 export class AccountDetailsComponent {
 
+  // expose enums for use in template.
   public MediaEnvironment = MediaEnvironment;
-  public NodeType = NodeType;
-  environments = Object.keys(MediaEnvironment).filter(x => !isNaN(Number(x)));
+  public AccountType = AccountType;
+
+  environments: Number[] = Object.keys(MediaEnvironment).filter(x => !isNaN(Number(x))).map((v, i, a) => Number(v));
 
   @Input()
-  account: Node;
+  account: Account;
 
   @Input()
   readOnly: boolean = true;
+
+  @Input()
+  newAccount: boolean = false;
 
   @Output()
   accountUpdated = new EventEmitter();
@@ -34,11 +37,7 @@ export class AccountDetailsComponent {
   }
 
   onClick() {
-    let json = JSON.stringify(<Account> {
-      name: this.account.name,
-      accountType: <number> this.account.nodeType,
-      properties: this.account.properties
-    });
+    let json = JSON.stringify(this.account);
     console.log(`JSON for account is ${json}`);
     this.router.navigate(["account", json]);
   }

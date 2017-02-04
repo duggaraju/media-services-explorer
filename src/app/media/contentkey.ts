@@ -1,3 +1,4 @@
-export interface ContentKey {
-    Id: string;
+import { MediaEntity } from './media.entity';
+
+export interface ContentKey extends MediaEntity {
 }

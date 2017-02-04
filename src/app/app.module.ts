@@ -22,7 +22,7 @@ import { AccountService } from './account.service';
 import { TreeModule } from 'angular2-tree-component';
 import { ArmService } from './arm/arm.service';
 import { AdalService } from './aad/adal.service';
-
+import { AdalServiceFactory } from './aad/adal.service.factory';
 const routeTracing = false;
 
 export const routes: Route[] = [
@@ -67,14 +67,14 @@ export const routes: Route[] = [
     FormsModule,
     HttpModule,
     TreeModule,
-    RouterModule.forRoot(routes, {  enableTracing: routeTracing, useHash: false})
+    RouterModule.forRoot(routes, {  enableTracing: routeTracing, useHash: false })
   ],
   providers: [
     // { provide: LocationStrategy, useClass: HashLocationStrategy },
     // { provide:APP_BASE_HREF,  useValue: location.pathname },
     MediaServiceFactory,
     AccountService,
-    AdalService,
+    AdalServiceFactory,
     ArmService
   ],
   bootstrap: [AppComponent ]
