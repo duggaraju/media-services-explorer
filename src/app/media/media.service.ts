@@ -14,6 +14,8 @@ import { StreamingEndpoint } from './streamingendpoint';
 import { Observable } from 'rxjs/Rx';
 import { MediaQuery } from "./mediaquery";
 import { QueryResult } from "./queryresult";
+import { MediaEntity } from './media.entity';
+import { MediaEntityService } from './media.entity.service';
 
 @Injectable()
 export class MediaService {
@@ -29,16 +31,13 @@ export class MediaService {
         });
     }
 
-    getRequestOptions(headers: Headers, omitAccept?: boolean): RequestOptions {
+    private getRequestOptions(headers: Headers): RequestOptions {
         let options = new RequestOptions( { headers: this.defaultHeaders });
         headers.forEach( (values: string[], name) => options.headers.set(name, values));
-        if(omitAccept) {
-            options.headers.delete("Accept");
-        }
         return options;
     }
 
-    private getApiUrl(): Observable<string> {
+    public getApiUrl(): Observable<string> {
         if (!this.apiUrl) {
             console.log(`Checking ${this.account.apiUrl} to see if redirection is needed `);
             return this.account.tokenProvider.getAuthorizationHeaders()
@@ -96,35 +95,12 @@ export class MediaService {
         return params;
     }
 
-    getStreamingEndpoints(query: MediaQuery): Observable<QueryResult<StreamingEndpoint>> {
-        return this.getEntities<StreamingEndpoint>("StreamingEndpoints", query);
+    get channels(): Observable<MediaEntityService<Channel>> {
+        return this.getEntityService("Channels");
     }
 
-    getChannels(query: MediaQuery): Observable<QueryResult<Channel>> {
-        return this.getEntities<Channel>("Channels", query);
-    }
-
-    getAssets(query: MediaQuery): Observable<QueryResult<Asset>> {
-        return this.getEntities<Asset>("Assets", query);
-    }
-
-    getJobs(query?: MediaQuery): Observable<QueryResult<Job>> {
-        return this.getEntities<Job>("Jobs", query);
-    }
-
-    getLocators(query: MediaQuery): Observable<QueryResult<Locator>> {
-        return this.getEntities<Locator>("Locators", query);
-    }
-
-    getAccessPolicies(query: MediaQuery): Observable<QueryResult<AccessPolicy>> {
-        return this.getEntities<AccessPolicy>("AccessPolicies", query);
-    }
-
-    getDeliveryPolicies(query: MediaQuery): Observable<QueryResult<DeliveryPolicy>> {
-        return this.getEntities<DeliveryPolicy>("AssetDeliveryPolicies", query);
-    }
-
-    getContentKeys(query: MediaQuery): Observable<QueryResult<ContentKey>> {
-        return this.getEntities<ContentKey>("ContentKeys", query);
+    public getEntityService<T extends MediaEntity>(entityName: string): Observable<MediaEntityService<T>> {
+        return this.getApiUrl().map(apiUrl =>
+            new MediaEntityService<T>(this.http, this.account, apiUrl, entityName));
     }
 }

@@ -10,6 +10,24 @@
     [footerHeight]="'auto'"
     [offset]="offset"
     (page)="onPage($event)"
+    (rowContextmenu)="onContextMenu($event)"
     class="material striped" >
   </swui-datatable>
+  <context-menu [useBootstrap4]="true" #assetMenu>
+    <template let-item contextMenuItem (execute)="playAsset($event.item)">Play</template>
+    <template let-item contextMenuItem (execute)="publishAsset($event.item)">Publish</template>
+    <template let-item contextMenuItem (execute)="deleteEntity($event.item)">Delete</template>
+  </context-menu>
+  <context-menu [useBootstrap4]="true" #channelMenu>
+    <template let-item contextMenuItem [visible]="isStopped" (execute)="startChannel($event.item)">Start</template>
+    <template let-item contextMenuItem [visible]="isStarted" (execute)="stopChannel($event.item)">Stop</template>
+    <template let-item contextMenuItem [visible]="isStarted" (execute)="resetChannel($event.item)">Reset</template>
+    <template let-item contextMenuItem [enabled]="isStopped" (execute)="deleteEntity($event.item)">Delete</template>
+  </context-menu>
+  <context-menu [useBootstrap4]="true" #originMenu>
+    <template let-item contextMenuItem [visible]="isStopped"  (execute)="startOrigin($event.item)">Start</template>
+    <template let-item contextMenuItem [visible]="isStarted" (execute)="stopOrigin($event.item)">Stop</template>
+    <template let-item contextMenuItem (execute)="scaleOrigin($event.item)">Scale</template>
+    <template let-item contextMenuItem [enabled]="isStopped" (execute)="deleteEntity($event.item)">Delete</template>
+  </context-menu>
 </div>

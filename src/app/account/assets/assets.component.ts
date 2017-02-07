@@ -1,12 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MediaServiceFactory } from '../../media/media.service.factory';
 import { Asset } from '../../media/asset';
 import { AssetOptions } from '../../media/asset-options';
-import { Observable } from 'rxjs/Rx';
-import { QueryResult } from '../../media/queryresult';
 import { EntityComponent } from '../entity.component';
 import { AccountService } from '../../account.service';
+import { ContextMenuComponent, ContextMenuService } from 'angular2-contextmenu';
 
 @Component({
   selector: 'app-assets',
@@ -14,6 +13,9 @@ import { AccountService } from '../../account.service';
   styleUrls: ['../entity.component.scss']
 })
 export class AssetsComponent extends EntityComponent<Asset> {
+
+  @ViewChild('assetMenu')
+  contextMenu: ContextMenuComponent;
 
   columns = [
     {
@@ -24,11 +26,11 @@ export class AssetsComponent extends EntityComponent<Asset> {
       prop: "Options"
     }];
 
-  constructor(activatedRoute:ActivatedRoute, mediaServiceFactory: MediaServiceFactory, accountService: AccountService) {
-    super(activatedRoute, mediaServiceFactory, accountService);
-  }
-
-  queryEntities(): Observable<QueryResult<Asset>> {
-    return this.mediaService.getAssets(this.query);
+  constructor(
+    activatedRoute:ActivatedRoute,
+    mediaServiceFactory: MediaServiceFactory,
+    accountService: AccountService,
+    contextMenuSerivce: ContextMenuService) {
+    super(activatedRoute, mediaServiceFactory, accountService, contextMenuSerivce, "Assets");
   }
 }

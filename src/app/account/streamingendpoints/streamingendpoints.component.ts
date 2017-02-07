@@ -1,11 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MediaServiceFactory } from '../../media/media.service.factory';
 import { StreamingEndpoint } from "../../media/streamingendpoint";
 import { EntityComponent } from '../entity.component';
-import { Observable } from 'rxjs/Rx';
-import { QueryResult } from '../../media/queryresult';
 import { AccountService } from '../../account.service';
+import { ContextMenuService, ContextMenuComponent } from 'angular2-contextmenu';
 
 @Component({
   selector: 'app-streamingendpoints',
@@ -13,6 +12,9 @@ import { AccountService } from '../../account.service';
   styleUrls: ['../entity.component.scss']
 })
 export class StreamingendpointsComponent extends EntityComponent<StreamingEndpoint> {
+
+  @ViewChild('originMenu')
+  contextMenu: ContextMenuComponent;
 
   columns = [
     {
@@ -27,11 +29,16 @@ export class StreamingendpointsComponent extends EntityComponent<StreamingEndpoi
       prop: "CdnEnabled"
     }
   ]
-  constructor(activatedRoute: ActivatedRoute, mediaServiceFactory:MediaServiceFactory, accountService: AccountService) {
-    super(activatedRoute, mediaServiceFactory, accountService);
+
+  constructor(activatedRoute: ActivatedRoute, mediaServiceFactory: MediaServiceFactory, accountService: AccountService, contextMenuService: ContextMenuService) {
+    super(activatedRoute, mediaServiceFactory, accountService, contextMenuService, "StreamingEndpoints");
    }
 
-  queryEntities(): Observable<QueryResult<StreamingEndpoint>> {
-      return this.mediaService.getStreamingEndpoints(this.query);;
-  }
+   private isStarted(item: StreamingEndpoint): boolean {
+     return item.State === "Running";
+   }
+
+   private isStopped(item: StreamingEndpoint): boolean {
+     return item.State === "Stopped";
+   }
 }

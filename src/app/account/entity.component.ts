@@ -9,27 +9,39 @@ import { QueryResult } from '../media/queryresult';
 import { Account } from '../account';
 import { AccountService } from '../account.service';
 import { Angular2DataTableModule } from 'angular2-data-table';
+import { MediaEntityService } from '../media/media.entity.service';
+import { MediaEntity } from '../media/media.entity';
+import { ContextMenuService, ContextMenuComponent } from 'angular2-contextmenu';
 
-export abstract class EntityComponent<T> implements OnInit {
+export abstract class EntityComponent<T extends MediaEntity> implements OnInit {
 
   protected columns: any[] = [];
-  protected mediaService: MediaService
   protected query = new MediaQuery();
   offset:number = 0;
   rows: T[] = [];
   count: number = 0;
   pageSize: number = 50;
+  private entities: MediaEntityService<T>;
+  protected contextMenu: ContextMenuComponent;
 
 
-  constructor(private activatedRoute:ActivatedRoute, private mediaServiceFactory: MediaServiceFactory, private accountService: AccountService) {
+  constructor(
+      private activatedRoute:ActivatedRoute,
+      private mediaServiceFactory: MediaServiceFactory,
+      private accountService: AccountService,
+      private contextMenuSerivce:ContextMenuService,
+      private entityName: string) {
   }
 
   ngOnInit(): void {
     this.activatedRoute.parent.params.subscribe((params: Params) => {
       let account = JSON.parse(params["account"]) as Account;
       let mediaAccount = this.accountService.getMediaAccount(account);
-      this.mediaService = this.mediaServiceFactory.getMediaService(mediaAccount);
-      this.refresh();
+      let mediaService = this.mediaServiceFactory.getMediaService(mediaAccount);
+      mediaService.getEntityService(this.entityName).subscribe(entities => {
+        this.entities = entities;
+        this.refresh();
+      })
     });
   }
 
@@ -41,7 +53,7 @@ export abstract class EntityComponent<T> implements OnInit {
   }
 
   private refresh(): void {
-     this.queryEntities().subscribe(result => {
+    this.entities.query(this.query).subscribe(result => {
         this.count = result.count;
         // angular2-data-table always expects the row indices to match those of the full data set.
         // create a sparse array with thos indices.
@@ -49,8 +61,21 @@ export abstract class EntityComponent<T> implements OnInit {
         const start = this.offset * this.pageSize;
         rows.splice(start, this.pageSize, ...result.value);
         this.rows = rows;
-      });
+    });
   }
 
-  abstract queryEntities(): Observable<QueryResult<T>>;
+  private onContextMenu(contextMenuEvent) {
+    console.log(`context menu event ${contextMenuEvent.event.screenX}:${contextMenuEvent.event.screenY} for ${contextMenuEvent.row.Id}`);
+    this.contextMenuSerivce.show.next({
+      event: contextMenuEvent.event,
+      item: contextMenuEvent.row,
+      contextMenu: this.contextMenu
+    })
+    contextMenuEvent.event.preventDefault();
+    contextMenuEvent.event.stopPropagation();
+  }
+
+  private deleteEntity(item:T) {
+    alert(`Are you sure you want to delete ${item.Id}`);
+  }
 }

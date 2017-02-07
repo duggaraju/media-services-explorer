@@ -7,6 +7,7 @@ import { Observable } from 'rxjs/Rx';
 import { MediaQuery } from "./mediaquery";
 import { QueryResult } from "./queryresult";
 import { MediaEntity } from './media.entity';
+import { MediaService } from './media.service';
 
 @Injectable()
 export class MediaEntityService<T extends MediaEntity> {
@@ -15,7 +16,7 @@ export class MediaEntityService<T extends MediaEntity> {
     constructor(private http: Http, private account: MediaAccount, private apiUrl: string, private entityName: string) {
         this.defaultHeaders = new Headers( {
             "Accept": "application/json",
-            "x-ms-version": account.apiVersion
+            "x-ms-version": account.apiVersion || MediaService.defaultVersion
         });
     }
 

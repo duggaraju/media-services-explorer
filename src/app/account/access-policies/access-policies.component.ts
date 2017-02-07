@@ -2,10 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { EntityComponent } from '../entity.component';
 import { AccessPolicy } from '../../media/accesspolicy';
-import { QueryResult } from '../../media/queryresult';
 import { MediaServiceFactory } from '../../media/media.service.factory';
 import { Observable } from 'rxjs';
 import { AccountService } from '../../account.service';
+import { ContextMenuService } from 'angular2-contextmenu';
 
 @Component({
   selector: 'app-locators',
@@ -28,11 +28,7 @@ export class AccessPoliciesComponent extends EntityComponent<AccessPolicy> {
       prop: "LastModified",
     }
   ]
-  constructor(activatedRoute: ActivatedRoute, mediaServiceFactory: MediaServiceFactory, accountService: AccountService) {
-    super(activatedRoute, mediaServiceFactory, accountService);
-   }
-
-   queryEntities(): Observable<QueryResult<AccessPolicy>> {
-     return this.mediaService.getAccessPolicies(this.query);
+  constructor(activatedRoute: ActivatedRoute, mediaServiceFactory: MediaServiceFactory, accountService: AccountService, contextMenuService: ContextMenuService) {
+    super(activatedRoute, mediaServiceFactory, accountService, contextMenuService, "AccessPolicies");
    }
 }

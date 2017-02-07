@@ -23,6 +23,7 @@ import { TreeModule } from 'angular2-tree-component';
 import { ArmService } from './arm/arm.service';
 import { AdalService } from './aad/adal.service';
 import { AdalServiceFactory } from './aad/adal.service.factory';
+import { ContextMenuModule } from 'angular2-contextmenu';
 const routeTracing = false;
 
 export const routes: Route[] = [
@@ -67,6 +68,7 @@ export const routes: Route[] = [
     FormsModule,
     HttpModule,
     TreeModule,
+    ContextMenuModule,
     RouterModule.forRoot(routes, {  enableTracing: routeTracing, useHash: false })
   ],
   providers: [

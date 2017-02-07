@@ -4,9 +4,8 @@ import { MediaServiceFactory } from "../../media/media.service.factory";
 import { Job } from "../../media/job";
 import { Account } from "../../account";
 import { EntityComponent }  from "../entity.component";
-import { Observable } from 'rxjs/Rx';
-import { QueryResult } from '../../media/queryresult';
 import { AccountService } from '../../account.service';
+import { ContextMenuService } from 'angular2-contextmenu';
 
 @Component({
   selector: 'app-jobs',
@@ -24,11 +23,7 @@ export class JobsComponent extends EntityComponent<Job> {
       prop: "LastModified",
     }];
 
-  constructor(activatedRoute: ActivatedRoute, mediaServiceFactory: MediaServiceFactory, accountService: AccountService) {
-    super(activatedRoute, mediaServiceFactory, accountService);
+  constructor(activatedRoute: ActivatedRoute, mediaServiceFactory: MediaServiceFactory, accountService: AccountService, contextMenuService: ContextMenuService) {
+    super(activatedRoute, mediaServiceFactory, accountService, contextMenuService, "Jobs");
    }
-
-  queryEntities(): Observable<QueryResult<Job>> {
-    return this.mediaService.getJobs(this.query);
-  }
 }
