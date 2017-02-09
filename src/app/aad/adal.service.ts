@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs/Rx';
-import * as adalLib from 'adal-angular';
 import { TokenProvider } from '../token.provider';
 import { AadTokenProvider } from './aad.token.provider';
 import { environment } from '../../environments/environment';
@@ -10,9 +9,9 @@ let constructorFn: adal.AuthenticationContextStatic = AuthenticationContext;
 @Injectable()
 export class AdalService {
 
-  private context: adal.AuthenticationContext;
+  private context: adalLib.AuthenticationContext;
 
-  constructor(private config: adal.Config) {
+  constructor(private config: adalLib.Config) {
     this.context = new constructorFn(config);
   }
 
@@ -24,7 +23,7 @@ export class AdalService {
     this.context.handleWindowCallback(hash);
   }
 
-  public getCachedUser(): adal.User  {
+  public getCachedUser(): adalLib.User  {
     return this.context.getCachedUser();
   }
   public getCachedToken(resource: string): string {

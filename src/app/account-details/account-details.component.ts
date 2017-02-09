@@ -49,4 +49,10 @@ export class AccountDetailsComponent {
   onUpdate() {
     this.accountUpdated.emit(this.account);
   }
+
+  onChange(event: Event) {
+    if (!this.readOnly && !this.account.properties["apiEndpoints"]) {
+      this.account.properties["apiEndpoints"] = [{}];
+    }
+  }
 }

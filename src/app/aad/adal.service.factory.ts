@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { AdalService } from './adal.service';
 import { environment } from '../../environments/environment';
 
-let Logging: adal.Logging;
 
 @Injectable()
 export class AdalServiceFactory {
@@ -15,7 +14,7 @@ export class AdalServiceFactory {
             };
         }        
     }
-    public createContext(config: adal.Config): AdalService {
+    public createContext(config: adalLib.Config): AdalService {
         return new AdalService(config);     
     }
 
@@ -23,8 +22,9 @@ export class AdalServiceFactory {
       let config:adal.Config = {
           clientId: environment.aadClientId,
           tenant: environment.aadTenant,
-      };    
-      // (<any>config).popUp = true;
+      }; 
+      // this is not working with electron.   
+      // config.popUp = true;
       return this.createContext(config);
     }
 }

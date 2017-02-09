@@ -21,6 +21,7 @@ function createWindow() {
         slashes: true
         });
     */
+    appWindow.maximize();
     appWindow.loadURL(startUrl); 
 
     globalShortcut.register('CmdOrCtrl+Shift+D', ()=> {

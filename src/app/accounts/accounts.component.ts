@@ -122,6 +122,7 @@ export class AccountsComponent implements OnInit {
     let data = node.data as Node;
     let accountType: number = this.nodes.indexOf(data);
     this.selectedAccount = new Account(accountType);
+    this.selectedAccount.properties["mediaEnvironment"] = MediaEnvironment.Production;
     this.readOnly = false;
     this.newAccount = true;
     console.log(`Adding a new account of type:${AccountType[accountType]}`);

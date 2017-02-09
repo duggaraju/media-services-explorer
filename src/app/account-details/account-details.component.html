@@ -16,29 +16,29 @@
       <div class="form-group row" [ngClass]="environment ? 'has-success' : 'has-danger'" >
         <label class="col-sm-3 col-form-label"  for="environment" >Environment</label>
         <div class="col-sm-9">
-          <select class="form-control" [(ngModel)]="account.properties.mediaEnvironment" id="environment" name="environment" required [disabled]="readOnly" #environment="ngModel" >
+          <select class="form-control" [(ngModel)]="account.properties.mediaEnvironment" id="environment" name="environment" required [disabled]="readOnly" #environment="ngModel" (change)="onChange($event)" >
             <option *ngFor="let env of environments" [ngValue]="env">{{MediaEnvironment[env]}}</option>
           </select>
         </div>
       </div>
     </fieldset>
     <fieldset *ngIf="account.properties.mediaEnvironment === MediaEnvironment.Custom" >
-      <div class="form-group row">
+      <div class="form-group row" [ngClass]="apiEndpoint.valid ? 'has-success' : 'has-danger'" >
         <label for="scope" class="col-sm-3 col-form-label" for="apiEndpoint" >API Endpoint</label>
         <div class="col-sm-9">
-          <input class="form-control" type="text" id="apiEndpoint" name="apiEndpoint" [(ngModel)]="account.properties.apiEndpoints[0].endpoint" [readonly]="readOnly" required/>
+          <input class="form-control" type="text" id="apiEndpoint" name="apiEndpoint" [(ngModel)]="account.properties.apiEndpoints[0].endpoint" required [readonly]="readOnly" #apiEndpoint="ngModel" />
         </div>
       </div>
-      <div class="form-group row" >
+      <div class="form-group row" [ngClass]="scope.valid ? 'has-success' : 'has-danger'" >
         <label for="scope" class="col-sm-3 col-form-label" for="scope" >Scope</label>
         <div class="col-sm-9">
-          <input class="form-control" type="text" id="scope" name="scope" [(ngModel)]="account.properties.scope" required #scope="ngModel" />
+          <input class="form-control" type="text" id="scope" name="scope" [(ngModel)]="account.properties.scope" required [readonly]="readOnly" #scope="ngModel" />
         </div>
       </div>
-      <div class="form-group row">
+      <div class="form-group row" [ngClass]="acsAddress.valid ? 'has-success' : 'has-danger'">
         <label for="acsAddress" class="col-sm-3 col-form-label" for="acsAddress" >ACS Address</label>
         <div class="col-sm-9">
-          <input class="form-control" type="text" id="acsAddress" name="acsAddress" [(ngModel)]="account.properties.primaryAuthEndpoint" [readonly]="readOnly"/>
+          <input class="form-control" type="text" id="acsAddress" name="acsAddress" [(ngModel)]="account.properties.primaryAuthEndpoint" required [readonly]="readOnly" #acsAddress="ngModel" />
         </div>
       </div>
     </fieldset>
