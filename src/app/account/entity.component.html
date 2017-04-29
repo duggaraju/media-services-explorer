@@ -1,5 +1,5 @@
 <div class="container-fluid" >
-  <swui-datatable 
+  <ngx-datatable 
     [rows]="rows"
     [columns]="columns"
     [columnMode]="'force'"
@@ -12,22 +12,22 @@
     (page)="onPage($event)"
     (rowContextmenu)="onContextMenu($event)"
     class="material striped" >
-  </swui-datatable>
+  </ngx-datatable>
   <context-menu [useBootstrap4]="true" #assetMenu>
-    <template let-item contextMenuItem (execute)="playAsset($event.item)">Play</template>
-    <template let-item contextMenuItem (execute)="publishAsset($event.item)">Publish</template>
-    <template let-item contextMenuItem (execute)="deleteEntity($event.item)">Delete</template>
+    <ng-template let-item contextMenuItem (execute)="playAsset($event.item)">Play</ng-template>
+    <ng-template let-item contextMenuItem (execute)="publishAsset($event.item)">Publish</ng-template>
+    <ng-template let-item contextMenuItem (execute)="deleteEntity($event.item)">Delete</ng-template>
   </context-menu>
   <context-menu [useBootstrap4]="true" #channelMenu>
-    <template let-item contextMenuItem [visible]="isStopped" (execute)="startChannel($event.item)">Start</template>
-    <template let-item contextMenuItem [visible]="isStarted" (execute)="stopChannel($event.item)">Stop</template>
-    <template let-item contextMenuItem [visible]="isStarted" (execute)="resetChannel($event.item)">Reset</template>
-    <template let-item contextMenuItem [enabled]="isStopped" (execute)="deleteEntity($event.item)">Delete</template>
+    <ng-template let-item contextMenuItem [visible]="isStopped" (execute)="startChannel($event.item)">Start</ng-template>
+    <ng-template let-item contextMenuItem [visible]="isStarted" (execute)="stopChannel($event.item)">Stop</ng-template>
+    <ng-template let-item contextMenuItem [visible]="isStarted" (execute)="resetChannel($event.item)">Reset</ng-template>
+    <ng-template let-item contextMenuItem [enabled]="isStopped" (execute)="deleteEntity($event.item)">Delete</ng-template>
   </context-menu>
   <context-menu [useBootstrap4]="true" #originMenu>
-    <template let-item contextMenuItem [visible]="isStopped"  (execute)="startOrigin($event.item)">Start</template>
-    <template let-item contextMenuItem [visible]="isStarted" (execute)="stopOrigin($event.item)">Stop</template>
-    <template let-item contextMenuItem (execute)="scaleOrigin($event.item)">Scale</template>
-    <template let-item contextMenuItem [enabled]="isStopped" (execute)="deleteEntity($event.item)">Delete</template>
+    <ng-template let-item contextMenuItem [visible]="isStopped"  (execute)="startOrigin($event.item)">Start</ng-template>
+    <ng-template let-item contextMenuItem [visible]="isStarted" (execute)="stopOrigin($event.item)">Stop</ng-template>
+    <ng-template let-item contextMenuItem (execute)="scaleOrigin($event.item)">Scale</ng-template>
+    <ng-template let-item contextMenuItem [enabled]="isStopped" (execute)="deleteEntity($event.item)">Delete</ng-template>
   </context-menu>
 </div>

@@ -4,10 +4,10 @@ import { Channel } from '../../media/channel';
 import { MediaAccount } from '../../media/mediaaccount';
 import { MediaService } from '../../media/media.service';
 import { MediaServiceFactory } from '../../media/media.service.factory';
-import { Angular2DataTableModule } from 'angular2-data-table';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { EntityComponent } from '../entity.component';
 import { AccountService } from '../../account.service';
-import { ContextMenuService, ContextMenuComponent } from 'angular2-contextmenu';
+import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
 
 @Component({
   selector: 'app-channels',

@@ -12,18 +12,18 @@ import { ChannelsComponent } from './account/channels/channels.component';
 import { AssetsComponent } from './account/assets/assets.component';
 import { JobsComponent } from './account/jobs/jobs.component';
 import { StreamingendpointsComponent } from './account/streamingendpoints/streamingendpoints.component';
-import { Angular2DataTableModule } from 'angular2-data-table';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { MediaServiceFactory } from './media/media.service.factory';
 import { LocatorsComponent } from './account/locators/locators.component';
 import { KeysComponent } from './account/keys/keys.component';
 import { AccessPoliciesComponent } from './account/access-policies/access-policies.component';
 import { DeliveryPoliciesComponent } from './account/delivery-policies/delivery-policies.component';
 import { AccountService } from './account.service';
-import { TreeModule } from 'angular2-tree-component';
+import { TreeModule } from 'angular-tree-component';
 import { ArmService } from './arm/arm.service';
 import { AdalService } from './aad/adal.service';
 import { AdalServiceFactory } from './aad/adal.service.factory';
-import { ContextMenuModule } from 'angular2-contextmenu';
+import { ContextMenuModule } from 'ngx-contextmenu';
 const routeTracing = false;
 
 export const routes: Route[] = [
@@ -63,7 +63,7 @@ export const routes: Route[] = [
     DeliveryPoliciesComponent
   ],
   imports: [
-    Angular2DataTableModule,
+    NgxDatatableModule,
     BrowserModule,
     FormsModule,
     HttpModule,

@@ -6,7 +6,7 @@ import { QueryResult } from '../../media/queryresult';
 import { MediaServiceFactory } from '../../media/media.service.factory';
 import { Observable } from 'rxjs';
 import { AccountService } from '../../account.service';
-import { ContextMenuService } from 'angular2-contextmenu';
+import { ContextMenuService } from 'ngx-contextmenu';
 
 @Component({
   selector: 'app-locators',

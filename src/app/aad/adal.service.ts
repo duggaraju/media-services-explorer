@@ -3,8 +3,9 @@ import { Observable } from 'rxjs/Rx';
 import { TokenProvider } from '../token.provider';
 import { AadTokenProvider } from './aad.token.provider';
 import { environment } from '../../environments/environment';
+import  * as adalLib from 'adal-angular/lib/adal';
 
-let constructorFn: adal.AuthenticationContextStatic = AuthenticationContext;
+let constructorFn: adalLib.AuthenticationContextStatic = adalLib;
 
 @Injectable()
 export class AdalService {

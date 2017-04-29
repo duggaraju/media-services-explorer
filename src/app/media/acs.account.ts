@@ -1,5 +1,6 @@
 import { MediaAccount } from "./mediaaccount";
 import { MediaEnvironment } from "../mediaenvironment";
+import { Account } from "../account";
 import { AccountType } from '../account.type';
 import { AcsCredentials } from '../acs/acs.credentials';
 import {} from './aad/aad.credentials';
@@ -32,8 +33,8 @@ export class AcsAccount  {
         this.environment = MediaEnvironment[value] || MediaEnvironment.Production;
     }
 
-    public static getSettingsForEnvironment(account: Account) {
-        let template = Account.environments.get(account.environment);
+    public static getSettingsForEnvironment(account: AcsAccount) {
+        let template = AcsAccount.environments.get(account.environment);
         if (template) {
             console.log(`Found settings for ${MediaEnvironment[account.environment]} ${template.scope}, ${template.apiUrl}`);
             account.scope = template.scope;
@@ -42,21 +43,21 @@ export class AcsAccount  {
         }
     };
 
-    static readonly environments:Map<MediaEnvironment, Account> = 
-    new Map<MediaEnvironment, Account>()
-        .set(MediaEnvironment.Production, <Account> {
+    static readonly environments:Map<MediaEnvironment, AcsAccount> = 
+    new Map<MediaEnvironment, AcsAccount>()
+        .set(MediaEnvironment.Production, <AcsAccount> {
             apiUrl: "https://media.windows.net",
             scope: "urn:WindowsAzureMediaServices",
             acsBaseAddress:  [
                 "https://wamsprodglobal001acs.accesscontrol.windows.net",
                 "https://wamsprodglobal002acs.accesscontrol.windows.net"
             ]
-        }).set(MediaEnvironment.Mooncake, <Account> {
+        }).set(MediaEnvironment.Mooncake, <AcsAccount> {
             apiUrl: "https://media.chinacloud.cn",
             scope: "urn:WindowsAzureMediaServices",
             acsBaseAddress: [
                 "https://"
             ]
-        }).set(MediaEnvironment.BlackForest, <Account> {
+        }).set(MediaEnvironment.BlackForest, <AcsAccount> {
         });
 }

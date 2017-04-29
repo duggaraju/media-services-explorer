@@ -5,7 +5,7 @@ import { Job } from "../../media/job";
 import { Account } from "../../account";
 import { EntityComponent }  from "../entity.component";
 import { AccountService } from '../../account.service';
-import { ContextMenuService } from 'angular2-contextmenu';
+import { ContextMenuService } from 'ngx-contextmenu';
 
 @Component({
   selector: 'app-jobs',

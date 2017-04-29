@@ -2,16 +2,16 @@
   <div class="row">
     <div class="col-md-4">
       <h2>Accounts</h2>
-      <Tree [nodes]="nodes"
+      <tree-root [nodes]="nodes"
           [options]="treeOptions"
           (onActivate)="onActivate($event.node)" >
-          <template #treeNodeTemplate let-node>
+          <ng-template #treeNodeTemplate let-node>
               <span title="{{node.data.subTitle}}">{{ node.data.name }}</span>
               <button *ngIf="!node.isRoot && !node.isLeaf" (click)="refresh($event, node)" ><i class="fa fa-refresh" aria-hidden="true"></i></button> 
               <button *ngIf="node.isRoot" (click)="add($event, node)"><i class="fa fa-plus"></i></button>
-          </template>
-          <template #loadingTemplate>Loading, please hold....</template>
-      </Tree>
+          </ng-template>
+          <ng-template #loadingTemplate>Loading, please hold....</ng-template>
+      </tree-root>
     </div>
     <div class="col-md-8">
       <account-details 

@@ -8,10 +8,10 @@ import { MediaQuery } from '../media/mediaquery';
 import { QueryResult } from '../media/queryresult';
 import { Account } from '../account';
 import { AccountService } from '../account.service';
-import { Angular2DataTableModule } from 'angular2-data-table';
+import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { MediaEntityService } from '../media/media.entity.service';
 import { MediaEntity } from '../media/media.entity';
-import { ContextMenuService, ContextMenuComponent } from 'angular2-contextmenu';
+import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
 
 export abstract class EntityComponent<T extends MediaEntity> implements OnInit {
 
@@ -55,7 +55,7 @@ export abstract class EntityComponent<T extends MediaEntity> implements OnInit {
   private refresh(): void {
     this.entities.query(this.query).subscribe(result => {
         this.count = result.count;
-        // angular2-data-table always expects the row indices to match those of the full data set.
+        // @swimlane/ngx-datatable always expects the row indices to match those of the full data set.
         // create a sparse array with thos indices.
         let rows = new Array(result.count);
         const start = this.offset * this.pageSize;

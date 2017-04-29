@@ -4,7 +4,7 @@ import { EntityComponent } from '../entity.component';
 import { ContentKey } from '../../media/contentkey';
 import { MediaServiceFactory } from '../../media/media.service.factory';
 import { AccountService } from '../../account.service';
-import { ContextMenuService, ContextMenuComponent } from 'angular2-contextmenu';
+import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
 
 @Component({
   selector: 'app-keys',

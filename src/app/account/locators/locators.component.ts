@@ -4,7 +4,7 @@ import { EntityComponent } from '../entity.component';
 import { Locator } from '../../media/locator';
 import { MediaServiceFactory } from '../../media/media.service.factory';
 import { AccountService } from '../../account.service';
-import { ContextMenuService } from 'angular2-contextmenu';
+import { ContextMenuService } from 'ngx-contextmenu';
 
 @Component({
   selector: 'app-locators',

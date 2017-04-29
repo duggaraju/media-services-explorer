@@ -6,7 +6,7 @@ import { AccountType } from '../account.type';
 import { AzureAccountNode } from './azure.account.node';
 import { MediaAccountNode } from './media.account.node';
 import { ArmService } from '../arm/arm.service';
-import { ITreeOptions, TreeNode, TreeComponent, IActionMapping } from 'angular2-tree-component';
+import { ITreeOptions, TreeNode, TreeComponent, IActionMapping } from 'angular-tree-component';
 import { Observable } from 'rxjs/Rx';
 import { Node } from './node';
 import { RootNode } from './root.node';

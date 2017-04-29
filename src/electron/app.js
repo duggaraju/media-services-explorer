@@ -6,10 +6,12 @@ let appWindow;
 
 function createWindow() {
     appWindow = new BrowserWindow({
+        show: false,
         fullscreenable: true,
-        "webPreferences": {
+        
+        webPreferences: {
             "webSecurity": false,
-            "nodeIntegration": false
+            "nodeIntegration": true
         }
     });
 
@@ -22,7 +24,8 @@ function createWindow() {
         });
     */
     appWindow.maximize();
-    appWindow.loadURL(startUrl); 
+    appWindow.loadURL(startUrl);
+    appWindow.show();
 
     globalShortcut.register('CmdOrCtrl+Shift+D', ()=> {
         appWindow.webContents.toggleDevTools();

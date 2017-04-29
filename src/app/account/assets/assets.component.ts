@@ -5,7 +5,7 @@ import { Asset } from '../../media/asset';
 import { AssetOptions } from '../../media/asset-options';
 import { EntityComponent } from '../entity.component';
 import { AccountService } from '../../account.service';
-import { ContextMenuComponent, ContextMenuService } from 'angular2-contextmenu';
+import { ContextMenuComponent, ContextMenuService } from 'ngx-contextmenu';
 
 @Component({
   selector: 'app-assets',

@@ -4,7 +4,7 @@ import { MediaServiceFactory } from '../../media/media.service.factory';
 import { StreamingEndpoint } from "../../media/streamingendpoint";
 import { EntityComponent } from '../entity.component';
 import { AccountService } from '../../account.service';
-import { ContextMenuService, ContextMenuComponent } from 'angular2-contextmenu';
+import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
 
 @Component({
   selector: 'app-streamingendpoints',
