@@ -69,6 +69,8 @@ export class AccountService {
       catch(error) {
         console.log(`Invalid JSON saved so ignoring it. ${error}`);
       }
+    } else {
+      this.accounts = [];
     }
     console.log(`Total accounts: ${this.accounts.length}`);
   }
