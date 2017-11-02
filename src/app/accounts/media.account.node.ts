@@ -9,7 +9,7 @@ import { NodeType } from './node.type';
 
 export class MediaAccountNode extends Node{
 
-    private loaded: boolean = false;
+    private loaded = false;
     public accountKey: string;
     public mediaEnvironment: MediaEnvironment;
 

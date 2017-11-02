@@ -15,18 +15,18 @@ export class KeysComponent extends EntityComponent<ContentKey> {
 
   columns = [
     {
-      prop: "Id"
+      prop: 'Id'
     }, {
-      prop: "ContentKeyType",
-      name: "Type"
+      prop: 'ContentKeyType',
+      name: 'Type'
     }, {
-      prop: "LastModified"
+      prop: 'LastModified'
     }, {
-      prop: "ProtectionKeyType"
+      prop: 'ProtectionKeyType'
     }
   ]
   
   constructor(activatedRoute: ActivatedRoute, mediaServiceFactory: MediaServiceFactory, accountService: AccountService, contextMenuService: ContextMenuService) {
-    super(activatedRoute, mediaServiceFactory, accountService, contextMenuService, "ContentKeys");
+    super(activatedRoute, mediaServiceFactory, accountService, contextMenuService, 'ContentKeys');
    }
 }

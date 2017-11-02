@@ -20,7 +20,7 @@ export class AcsService implements TokenProvider {
     }
 
     public getAuthorizationHeaders(): Observable<Headers>    {
-        let now = new Date(Date.now() + 60000);
+        const now = new Date(Date.now() + 60000);
         if (!this.token || this.token.ExpirationDate < now) {
             console.log(`Needs to refresh token for ${this.credentials.primaryAuthAddress}`);
             return this.refreshToken()
@@ -30,12 +30,13 @@ export class AcsService implements TokenProvider {
     }
 
     private refreshToken(): Observable<Token> {
-        let url = this.credentials.primaryAuthAddress + "/v2/OAuth2-13";
-        let body = `grant_type=client_credentials&client_id=${this.credentials.accountName}&client_secret=${encodeURIComponent(this.credentials.primaryKey)}&scope=${encodeURIComponent(this.credentials.scope)}`;
+        const url = this.credentials.primaryAuthAddress + '/v2/OAuth2-13';
+        // tslint:disable-next-line:max-line-length
+        const body = `grant_type=client_credentials&client_id=${this.credentials.accountName}&client_secret=${encodeURIComponent(this.credentials.primaryKey)}&scope=${encodeURIComponent(this.credentials.scope)}`;
 
-        let headers = new Headers( { "Content-Type": "application/x-www-form-urlencoded"});
-        let options = new RequestOptions( { headers: headers } );
-        console.log("Refreshing token for " + url);
+        const headers = new Headers( { 'Content-Type': 'application/x-www-form-urlencoded'});
+        const options = new RequestOptions( { headers: headers } );
+        console.log('Refreshing token for ' + url);
         return this.http.post(url, body, options)
             .map(res =>  {
                 this.token = res.json() as Token;
@@ -46,9 +47,9 @@ export class AcsService implements TokenProvider {
     }
 
     private getAuthHeader(): Headers {
-        let headers = new Headers();
-        let headerValue = `Bearer ${this.token.access_token}`;
-        headers.append("Authorization", headerValue);
+        const headers = new Headers();
+        const headerValue = `Bearer ${this.token.access_token}`;
+        headers.append('Authorization', headerValue);
         return headers;
     }
 }

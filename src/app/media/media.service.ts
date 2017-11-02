@@ -12,27 +12,28 @@ import { AccessPolicy } from './accesspolicy';
 import { DeliveryPolicy } from './deliverypolicy';
 import { StreamingEndpoint } from './streamingendpoint';
 import { Observable } from 'rxjs/Rx';
-import { MediaQuery } from "./mediaquery";
-import { QueryResult } from "./queryresult";
+import { MediaQuery } from './mediaquery';
+import { QueryResult } from './queryresult';
 import { MediaEntity } from './media.entity';
 import { MediaEntityService } from './media.entity.service';
 
 @Injectable()
 export class MediaService {
+    public static readonly defaultVersion: string = '2.14';
+
     private defaultHeaders: Headers;
     private apiUrl: string;
-    
-    public static readonly defaultVersion:string = "2.14";
+
 
     constructor(private http: Http, private account: MediaAccount) {
         this.defaultHeaders = new Headers( {
-            "Accept": "application/json",
-            "x-ms-version": account.apiVersion || MediaService.defaultVersion
+            'Accept': 'application/json',
+            'x-ms-version': account.apiVersion || MediaService.defaultVersion
         });
     }
 
     private getRequestOptions(headers: Headers): RequestOptions {
-        let options = new RequestOptions( { headers: this.defaultHeaders });
+        const options = new RequestOptions( { headers: this.defaultHeaders });
         headers.forEach( (values: string[], name) => options.headers.set(name, values));
         return options;
     }
@@ -43,8 +44,8 @@ export class MediaService {
             return this.account.tokenProvider.getAuthorizationHeaders()
                 .flatMap((headers: Headers) => this.http.get(this.account.apiUrl, this.getRequestOptions(headers)))
                 .map( (response: Response) =>  {
-                    let  metadata = response.json();
-                    this.apiUrl = metadata["odata.metadata"].replace(/\/\$metadata$/, "");
+                    const  metadata = response.json();
+                    this.apiUrl = metadata['odata.metadata'].replace(/\/\$metadata$/, '');
                     return this.apiUrl;
                 });
         }
@@ -56,7 +57,7 @@ export class MediaService {
      */
     getMetadata(): Observable<any> {
         return this.getApiUrl()
-            .flatMap(url => this.account.tokenProvider.getAuthorizationHeaders()) 
+            .flatMap(url => this.account.tokenProvider.getAuthorizationHeaders())
             .flatMap(headers =>  this.http.get(`${this.apiUrl}/$metadata`, this.getRequestOptions(headers)))
             .map(response => response.json());
     }
@@ -64,39 +65,39 @@ export class MediaService {
     /**
      * Queries entities
      */
-    getEntities<T>(entityName: string, query?:MediaQuery): Observable<QueryResult<T>> {
-        let entityUrl: string; 
+    getEntities<T>(entityName: string, query?: MediaQuery): Observable<QueryResult<T>> {
+        let entityUrl: string;
         return this.getApiUrl()
             .flatMap(url => {
                 entityUrl = `${url}/${entityName}`;
                 return this.account.tokenProvider.getAuthorizationHeaders()
             }).flatMap(headers =>  {
-                var options = this.getRequestOptions(headers);
+                const options = this.getRequestOptions(headers);
                 if (query) {
                     options.search = this.buildSearch(query);
                 }
                 console.log(`querying ${entityUrl}`);
                 return this.http.get(entityUrl, options);
             }).map(response => {
-                let json = response.json();
+                const json = response.json();
                 return <QueryResult<T>> {
-                    count: parseInt(json["odata.count"], 10),
+                    count: parseInt(json['odata.count'], 10),
                     value: json.value
                 };
             });
     }
 
     private buildSearch(query: MediaQuery): URLSearchParams {
-        var params = new URLSearchParams();
-        params.set("$inlinecount", "allpages");
-        params.set("$top", query.top.toString());
-        params.set("$skip", query.skip.toString());
-        params.set("$filter", query.query.toString());
+        const params = new URLSearchParams();
+        params.set('$inlinecount', 'allpages');
+        params.set('$top', query.top.toString());
+        params.set('$skip', query.skip.toString());
+        params.set('$filter', query.query.toString());
         return params;
     }
 
     get channels(): Observable<MediaEntityService<Channel>> {
-        return this.getEntityService("Channels");
+        return this.getEntityService('Channels');
     }
 
     public getEntityService<T extends MediaEntity>(entityName: string): Observable<MediaEntityService<T>> {

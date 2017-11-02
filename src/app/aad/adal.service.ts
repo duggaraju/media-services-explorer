@@ -3,16 +3,16 @@ import { Observable } from 'rxjs/Rx';
 import { TokenProvider } from '../token.provider';
 import { AadTokenProvider } from './aad.token.provider';
 import { environment } from '../../environments/environment';
-import  * as adalLib from 'adal-angular/lib/adal';
+import * as adal from 'adal-angular/lib/adal';
 
-let constructorFn: adalLib.AuthenticationContextStatic = adalLib;
+const constructorFn: adal.AuthenticationContextStatic = adal;
 
 @Injectable()
 export class AdalService {
 
-  private context: adalLib.AuthenticationContext;
+  private context: adal.AuthenticationContext;
 
-  constructor(private config: adalLib.Config) {
+  constructor(private config: adal.Config) {
     this.context = new constructorFn(config);
   }
 
@@ -20,11 +20,11 @@ export class AdalService {
     this.context.login();
   }
 
-  public handleWindowCallback(hash?:string): void  {
-    this.context.handleWindowCallback(hash);
+  public handleWindowCallback(hash?: string): void  {
+    this.context.handleWindowCallback();
   }
 
-  public getCachedUser(): adalLib.User  {
+  public getCachedUser(): adal.User  {
     return this.context.getCachedUser();
   }
   public getCachedToken(resource: string): string {
@@ -32,7 +32,7 @@ export class AdalService {
   }
 
   public acquireToken(resource: string): Observable<string> {
-    let acquireToken = Observable.bindCallback(this.context.acquireToken.bind(this.context, resource), this.tokenSelector);
+    const acquireToken = Observable.bindCallback(this.context.acquireToken.bind(this.context, resource), this.tokenSelector);
     return acquireToken();
   }
 

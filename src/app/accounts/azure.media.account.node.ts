@@ -9,7 +9,7 @@ import { MediaAccountInfo } from '../arm/media.account.info';
 
 export class AzureMediaAccountNode extends Node {
 
-    private loaded: boolean = false;
+    private loaded = false;
     public accountKey: string;
 
     constructor(public mediaAccountInfo: MediaAccountInfo, private armService?: ArmService, private adalService?: AdalService) {
@@ -33,7 +33,7 @@ export class AzureMediaAccountNode extends Node {
     }
 
     private loadAccountDetails(): Observable<any> {
-        console.log("loading media account keys...");
+        console.log('loading media account keys...');
         return this.armService.getMediaAccountKeys(this.adalService, this.mediaAccountInfo.id);
-    }    
+    }
 }

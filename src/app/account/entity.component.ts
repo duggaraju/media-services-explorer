@@ -17,28 +17,28 @@ export abstract class EntityComponent<T extends MediaEntity> implements OnInit {
 
   protected columns: any[] = [];
   protected query = new MediaQuery();
-  offset:number = 0;
+  offset = 0;
   rows: T[] = [];
-  count: number = 0;
-  pageSize: number = 50;
+  count = 0;
+  pageSize = 50;
   private entities: MediaEntityService<T>;
   protected contextMenu: ContextMenuComponent;
 
 
   constructor(
-      private activatedRoute:ActivatedRoute,
+      private activatedRoute: ActivatedRoute,
       private mediaServiceFactory: MediaServiceFactory,
       private accountService: AccountService,
-      private contextMenuSerivce:ContextMenuService,
+      private contextMenuSerivce: ContextMenuService,
       private entityName: string) {
   }
 
   ngOnInit(): void {
     this.activatedRoute.parent.params.subscribe((params: Params) => {
-      let account = JSON.parse(params["account"]) as Account;
-      let mediaAccount = this.accountService.getMediaAccount(account);
-      let mediaService = this.mediaServiceFactory.getMediaService(mediaAccount);
-      mediaService.getEntityService(this.entityName).subscribe(entities => {
+      const account = JSON.parse(params['account']) as Account;
+      const mediaAccount = this.accountService.getMediaAccount(account);
+      const mediaService = this.mediaServiceFactory.getMediaService(mediaAccount);
+      mediaService.getEntityService<T>(this.entityName).subscribe(entities => {
         this.entities = entities;
         this.refresh();
       })
@@ -57,7 +57,7 @@ export abstract class EntityComponent<T extends MediaEntity> implements OnInit {
         this.count = result.count;
         // @swimlane/ngx-datatable always expects the row indices to match those of the full data set.
         // create a sparse array with thos indices.
-        let rows = new Array(result.count);
+        const rows = new Array(result.count);
         const start = this.offset * this.pageSize;
         rows.splice(start, this.pageSize, ...result.value);
         this.rows = rows;
@@ -75,7 +75,7 @@ export abstract class EntityComponent<T extends MediaEntity> implements OnInit {
     contextMenuEvent.event.stopPropagation();
   }
 
-  private deleteEntity(item:T) {
+  private deleteEntity(item: T) {
     alert(`Are you sure you want to delete ${item.Id}`);
   }
 }

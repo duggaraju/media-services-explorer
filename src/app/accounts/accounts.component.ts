@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Account } from "../account";
-import { MediaEnvironment } from "../mediaenvironment";
+import { Account } from '../account';
+import { MediaEnvironment } from '../mediaenvironment';
 import { AccountType } from '../account.type';
 import { AzureAccountNode } from './azure.account.node';
 import { MediaAccountNode } from './media.account.node';
@@ -26,13 +26,13 @@ export class AccountsComponent implements OnInit {
   private tree: TreeComponent;
 
   selectedAccount: Account;
-  readOnly: boolean = false;
-  newAccount: boolean = false;
+  readOnly = false;
+  newAccount = false;
 
   readonly nodes: Node[] = [
-    new RootNode("Classic Accounts"),
-    new RootNode("Azure AD Accounts"),
-    new RootNode("Azure Accounts")
+    new RootNode('Classic Accounts'),
+    new RootNode('Azure AD Accounts'),
+    new RootNode('Azure Accounts')
   ];
 
   treeOptions: ITreeOptions = {
@@ -48,7 +48,7 @@ export class AccountsComponent implements OnInit {
     this.loadAccounts();
     this.activatedRoute.fragment.subscribe(fragment => { 
       if (fragment) {
-        console.log("Fragment is " + fragment);
+        console.log('Fragment is ' + fragment);
         this.nodes[NodeType.ArmAccount].children.forEach((node) => {
           var account =  node as AzureAccountNode;
           account.adalService.handleWindowCallback(fragment);
@@ -122,7 +122,7 @@ export class AccountsComponent implements OnInit {
     let data = node.data as Node;
     let accountType: number = this.nodes.indexOf(data);
     this.selectedAccount = new Account(accountType);
-    this.selectedAccount.properties["mediaEnvironment"] = MediaEnvironment.Production;
+    this.selectedAccount.properties['mediaEnvironment'] = MediaEnvironment.Production;
     this.readOnly = false;
     this.newAccount = true;
     console.log(`Adding a new account of type:${AccountType[accountType]}`);

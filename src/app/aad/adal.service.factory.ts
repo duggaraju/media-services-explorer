@@ -14,19 +14,23 @@ export class AdalServiceFactory {
                 log: (message) => console.log(message),
                 level: environment.adalLogLevel
             };
-        }        
+        }
     }
+
     public createContext(config: adal.Config): AdalService {
-        return new AdalService(config);     
+        return new AdalService(config);
     }
 
     public createContextForUser(username: string) {
-      let config:adal.Config = {
-          clientId: environment.aadClientId,
-          tenant: environment.aadTenant,
-      }; 
-      // this is not working with electron.   
-      // config.popUp = true;
-      return this.createContext(config);
+        return this.createContextForDomain(username.substring(username.indexOf('@')));
+    }
+
+    public createContextForDomain(domain: string) {
+        const config: adal.Config = {
+            clientId: environment.aadClientId,
+            tenant: environment.aadTenant,
+        };
+        config.popUp = environment.popUp;
+        return this.createContext(config);
     }
 }

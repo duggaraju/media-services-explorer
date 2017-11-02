@@ -27,24 +27,24 @@ import { ContextMenuModule } from 'ngx-contextmenu';
 const routeTracing = false;
 
 export const routes: Route[] = [
-  { path: "", redirectTo: "accounts", pathMatch: "full"},
-  { path: "accounts", component: AccountsComponent },
+  { path: '', redirectTo: 'accounts', pathMatch: 'full'},
+  { path: 'accounts', component: AccountsComponent },
   {
-    path: "account/:account",
+    path: 'account/:account',
     component: AccountComponent,
     children: [
       { path: '', redirectTo: 'assets', pathMatch: 'full' },
-      { path: "assets", component: AssetsComponent },
-      { path: "channels", component: ChannelsComponent },
-      { path: "origins", component: StreamingendpointsComponent },
-      { path: "jobs", component: JobsComponent },
-      { path: "locators", component: LocatorsComponent },
-      { path: "accesspolicies", component: AccessPoliciesComponent },
-      { path: "deliverypolicies", component: DeliveryPoliciesComponent },
-      { path: "keys", component: KeysComponent }
+      { path: 'assets', component: AssetsComponent },
+      { path: 'channels', component: ChannelsComponent },
+      { path: 'origins', component: StreamingendpointsComponent },
+      { path: 'jobs', component: JobsComponent },
+      { path: 'locators', component: LocatorsComponent },
+      { path: 'accesspolicies', component: AccessPoliciesComponent },
+      { path: 'deliverypolicies', component: DeliveryPoliciesComponent },
+      { path: 'keys', component: KeysComponent }
     ]
   },
-  { path: "**", component: AccountsComponent },
+  { path: '**', component: AccountsComponent },
 ];
 
 @NgModule({
