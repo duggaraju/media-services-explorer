@@ -41,6 +41,14 @@
             "port": 5858,
             "sourceMaps": false,
             "outFiles": []
+        },
+        {
+            "name": "Launch localhost",
+            "type": "chrome",
+            "request": "launch",
+            "sourceMaps": true,
+            "url": "http://localhost:4200/",
+            "webRoot": "${workspaceRoot}/src"
         }
     ]
 }

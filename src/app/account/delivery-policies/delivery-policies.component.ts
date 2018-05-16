@@ -7,6 +7,7 @@ import { MediaServiceFactory } from '../../media/media.service.factory';
 import { Observable } from 'rxjs';
 import { AccountService } from '../../account.service';
 import { ContextMenuService } from 'ngx-contextmenu';
+import { AdalService } from 'app/aad/adal.service';
 
 @Component({
   selector: 'app-locators',
@@ -17,13 +18,17 @@ export class DeliveryPoliciesComponent extends EntityComponent<DeliveryPolicy> {
 
   columns = [
     {
-      prop: "Id"
+      prop: 'Id'
     }, {
-      prop: "Type"
+      prop: 'Type'
     }
   ]
-  
-  constructor(activatedRoute: ActivatedRoute, mediaServiceFactory: MediaServiceFactory, accountService: AccountService, contextMenuService: ContextMenuService) {
-    super(activatedRoute, mediaServiceFactory, accountService, contextMenuService, "AssetDeliveryPolicies");
+
+  constructor(
+    activatedRoute: ActivatedRoute,
+    mediaServiceFactory: MediaServiceFactory,
+    adalService: AdalService,
+    contextMenuService: ContextMenuService) {
+    super(activatedRoute, mediaServiceFactory, adalService, contextMenuService, 'AssetDeliveryPolicies');
    }
 }

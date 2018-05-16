@@ -5,11 +5,13 @@ import { NodeType } from './node.type';
 
 export class Node {
 
-    public hasChildren: boolean = true;
+    public hasChildren = true;
     public children: Node[];
 
-    constructor(public name:string, public nodeType: NodeType = NodeType.Root, public account?: Account) {
-        this.hasChildren = this.nodeType == NodeType.Root || this.nodeType == NodeType.AzureAccount || this.nodeType == NodeType.Subscription;
+    constructor(public name: string, public nodeType: NodeType = NodeType.Root, public account?: Account) {
+        this.hasChildren = this.nodeType === NodeType.Root ||
+         this.nodeType === NodeType.AzureAccount ||
+          this.nodeType === NodeType.Subscription;
     }
 
     public loadChildren(): Promise<Node[]> {

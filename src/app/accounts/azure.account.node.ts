@@ -8,23 +8,21 @@ import { NodeType } from './node.type';
 import { Subscription } from '../arm/subscription';
 
 export class AzureAccountNode extends Node {
-    
-    constructor(public account:Account, public adalService:AdalService, private armService:ArmService) {
-        super(account.name, NodeType.AzureAccount, account);
+
+    constructor(account: string, public adalService: AdalService, private armService: ArmService) {
+        super(account, NodeType.AzureAccount);
     }
 
     public loadChildren(): Promise<Node[]> {
-        return this.loginIfNeeded()
-            .switchMap(x => this.loadSubscriptions())
+        return this.loadSubscriptions()
             .map(subscriptions => subscriptions.map((s, i) => {
-                let node = new AzureSubscriptionNode(s, this.adalService, this.armService);
+                const node = new AzureSubscriptionNode(s, this.adalService, this.armService);
                 return node;
             })).toPromise();
     }
 
     private loginIfNeeded(): Observable<boolean> {
-        let user = this.adalService.getCachedUser();
-
+        const user = this.adalService.getCachedUser();
         if (!user) {
             console.log('getting children by logging...');
             this.adalService.login();
@@ -38,7 +36,7 @@ export class AzureAccountNode extends Node {
     }
 
     private loadSubscriptions(): Observable<Subscription[]> {
-        console.log("loading subscriptions...");
-        return this.armService.getSubscriptions(this.adalService);
+        console.log('loading subscriptions...');
+        return this.armService.getSubscriptions();
     }
 }

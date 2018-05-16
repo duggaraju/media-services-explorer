@@ -3,34 +3,38 @@ import { AdalService } from './adal.service';
 import { environment } from '../../environments/environment';
 import * as adal from 'adal-angular/lib/adal';
 
-declare var Logging: adal.Logging;
-
 @Injectable()
 export class AdalServiceFactory {
 
+    private contextMap = new Map<string, AdalService>();
+
     constructor() {
-        if (environment.adalLogging) {
-            Logging = {
-                log: (message) => console.log(message),
-                level: environment.adalLogLevel
-            };
-        }
     }
 
-    public createContext(config: adal.Config): AdalService {
+    private createContext(config: adal.Config): AdalService {
         return new AdalService(config);
     }
 
-    public createContextForUser(username: string) {
+    public handleCallback(): void {
+        this.contextMap.forEach(context => {
+            context.handleWindowCallback();
+        })
+    }
+
+    public getContextForUser(username: string) {
         return this.createContextForDomain(username.substring(username.indexOf('@')));
     }
 
     public createContextForDomain(domain: string) {
-        const config: adal.Config = {
-            clientId: environment.aadClientId,
-            tenant: environment.aadTenant,
-        };
-        config.popUp = environment.popUp;
-        return this.createContext(config);
+        let context = this.contextMap.get(domain);
+        if (!context) {
+            const config: adal.Config = {
+                clientId: environment.aadClientId,
+                tenant: environment.aadTenant,
+                popUp: environment.popUp
+            };
+            context = this.createContext(config);
+        }
+        return context;
     }
 }

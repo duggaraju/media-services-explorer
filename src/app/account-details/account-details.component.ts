@@ -1,12 +1,12 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { Account } from "../account";
-import { AccountType } from "../account.type";
+import { Account } from '../account';
+import { AccountType } from '../account.type';
 import { MediaEnvironment } from '../mediaenvironment';
-import { Router } from "@angular/router";
+import { Router } from '@angular/router';
 import { AccountService } from '../account.service';
 
 @Component({
-  selector: 'account-details',
+  selector: 'app-account-details',
   templateUrl: './account-details.component.html',
   styleUrls: ['./account-details.component.css']
 })
@@ -22,10 +22,10 @@ export class AccountDetailsComponent {
   account: Account;
 
   @Input()
-  readOnly: boolean = true;
+  readOnly = true;
 
   @Input()
-  newAccount: boolean = false;
+  newAccount = false;
 
   @Output()
   accountUpdated = new EventEmitter();
@@ -33,13 +33,13 @@ export class AccountDetailsComponent {
   @Output()
   accountDeleted = new EventEmitter();
 
-  constructor(private router:Router, private accountService:AccountService) {
+  constructor(private router: Router, private accountService:AccountService) {
   }
 
   onClick() {
-    let json = JSON.stringify(this.account);
+    const json = JSON.stringify(this.account);
     console.log(`JSON for account is ${json}`);
-    this.router.navigate(["account", json]);
+    this.router.navigate(['account', json]);
   }
 
   onDelete() {
@@ -51,8 +51,8 @@ export class AccountDetailsComponent {
   }
 
   onChange(event: Event) {
-    if (!this.readOnly && !this.account.properties["apiEndpoints"]) {
-      this.account.properties["apiEndpoints"] = [{}];
+    if (!this.readOnly && !this.account.properties['apiEndpoints']) {
+      this.account.properties['apiEndpoints'] = [{}];
     }
   }
 }

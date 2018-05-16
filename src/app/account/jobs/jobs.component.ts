@@ -1,11 +1,12 @@
 import { Component } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { MediaServiceFactory } from "../../media/media.service.factory";
-import { Job } from "../../media/job";
-import { Account } from "../../account";
-import { EntityComponent }  from "../entity.component";
+import { MediaServiceFactory } from '../../media/media.service.factory';
+import { Job } from '../../media/job';
+import { Account } from '../../account';
+import { EntityComponent }  from '../entity.component';
 import { AccountService } from '../../account.service';
 import { ContextMenuService } from 'ngx-contextmenu';
+import { AdalService } from 'app/aad/adal.service';
 
 @Component({
   selector: 'app-jobs',
@@ -16,14 +17,18 @@ export class JobsComponent extends EntityComponent<Job> {
 
   columns = [
     {
-      prop: "Name"
+      prop: 'Name'
     }, {
-      prop: "State"
+      prop: 'State'
     }, {
-      prop: "LastModified",
+      prop: 'LastModified',
     }];
 
-  constructor(activatedRoute: ActivatedRoute, mediaServiceFactory: MediaServiceFactory, accountService: AccountService, contextMenuService: ContextMenuService) {
-    super(activatedRoute, mediaServiceFactory, accountService, contextMenuService, "Jobs");
+  constructor(
+    activatedRoute: ActivatedRoute,
+    mediaServiceFactory: MediaServiceFactory,
+    adalService: AdalService,
+    contextMenuService: ContextMenuService) {
+    super(activatedRoute, mediaServiceFactory, adalService, contextMenuService, 'Jobs');
    }
 }

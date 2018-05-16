@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Account } from '../account';
 import { MediaEnvironment } from '../mediaenvironment';
@@ -12,15 +12,14 @@ import { Node } from './node';
 import { RootNode } from './root.node';
 import { NodeType } from './node.type';
 import { AdalService } from '../aad/adal.service';
-import { AdalServiceFactory } from '../aad/adal.service.factory';
 import { AccountService } from '../account.service';
 
 @Component({
-  selector: 'accounts',
+  selector: 'app-accounts',
   templateUrl: './accounts.component.html',
   styleUrls: ['./accounts.component.css']
 })
-export class AccountsComponent implements OnInit {
+export class AccountsComponent implements AfterViewInit {
 
   @ViewChild(TreeComponent)
   private tree: TreeComponent;
@@ -29,11 +28,7 @@ export class AccountsComponent implements OnInit {
   readOnly = false;
   newAccount = false;
 
-  readonly nodes: Node[] = [
-    new RootNode('Classic Accounts'),
-    new RootNode('Azure AD Accounts'),
-    new RootNode('Azure Accounts')
-  ];
+  readonly nodes: Node[] = [];
 
   treeOptions: ITreeOptions = {
     getChildren: this.getChildren,
@@ -44,40 +39,39 @@ export class AccountsComponent implements OnInit {
     }
   }
 
-  constructor(private activatedRoute:ActivatedRoute, private adalServiceFactory:AdalServiceFactory, private armService:ArmService, private accountService: AccountService) {
+  constructor(private activatedRoute: ActivatedRoute,
+     private adalService: AdalService,
+     private armService: ArmService,
+     private accountService: AccountService) {
+    this.activatedRoute.fragment.subscribe(this.handleWindowCallback.bind(this));
     this.loadAccounts();
-    this.activatedRoute.fragment.subscribe(fragment => { 
-      if (fragment) {
-        console.log('Fragment is ' + fragment);
-        this.nodes[NodeType.ArmAccount].children.forEach((node) => {
-          var account =  node as AzureAccountNode;
-          account.adalService.handleWindowCallback(fragment);
-        })
-      }
-    });
   }
 
+  private handleWindowCallback(fragment: string) {
+    if (fragment) {
+      console.log('Fragment is ' + fragment);
+      this.adalService.handleWindowCallback(fragment);
+    }
+  }
   private loadAccounts(): void {
-    let accounts = this.accountService.getAccounts();
-    this.nodes[0].children = this.createNodes(accounts, AccountType.AcsAccount, account => new MediaAccountNode(account));
-    this.nodes[1].children = this.createNodes(accounts, AccountType.AadAccount, account => new MediaAccountNode(account));
-    this.nodes[2].children = this.createNodes(accounts, AccountType.ArmAccount, account => 
-      new AzureAccountNode(
-        account, 
-        this.adalServiceFactory.createContextForUser(account.name),
-        this.armService));   
+    const user = this.adalService.getCachedUser();
+    const root = new AzureAccountNode(user.userName, this.adalService, this.armService);
+    this.nodes.push(root);
   }
 
-  private createNodes(accounts: Account[], accountType: AccountType, createFunction:(account:Account) => Node): Node[] {
+  ngAfterViewInit(): void {
+  }
+
+  private createNodes(accounts: Account[], accountType: AccountType, createFunction: (account: Account) => Node): Node[] {
     return accounts.filter( account => account.accountType === accountType).map(createFunction);
   }
 
-  private onUpdate(account:Account): void {
-    let added = this.accountService.updateAccount(account);
+  private onUpdate(account: Account): void {
+    const added = this.accountService.updateAccount(account);
     if (added) {
-      let nodeType: number = account.accountType;
-      let node = account.accountType == AccountType.ArmAccount ? 
-        new AzureAccountNode(account, this.adalServiceFactory.createContextForUser(account.name), this.armService) :
+      const nodeType: number = account.accountType;
+      const node = account.accountType === AccountType.ArmAccount ?
+        new AzureAccountNode(account.name, this.adalService, this.armService) :
         new MediaAccountNode(account);
       console.log(`Creating a new node name:${node.name} of type:${NodeType[nodeType]}`);
       this.nodes[nodeType].children.push(node);
@@ -86,41 +80,38 @@ export class AccountsComponent implements OnInit {
     }
   }
 
-  onDelete(account:Account): void {
+  onDelete(account: Account): void {
     console.log(`Deleting account name:${account.name} of type:${AccountType[account.accountType]}`);
     this.accountService.deleteAccount(account);
-    let nodes = this.nodes[account.accountType].children;
-    let index = nodes.findIndex(node => node.name === account.name);
-    if (index != -1) {
+    const nodes = this.nodes[account.accountType].children;
+    const index = nodes.findIndex(node => node.name === account.name);
+    if (index !== -1) {
       console.log(`removing node from the tree...`)
       nodes.splice(index, 1);
       this.tree.treeModel.update();
     }
-    this.selectedAccount == null;
+    this.selectedAccount = null;
   }
 
-  ngOnInit() {
-  }
-
-  private onActivate(node:TreeNode): void {
-    let account = node.data as Node;
+  private onActivate(node: TreeNode): void {
+    const account = node.data as Node;
     account.onActivate().subscribe(x => {
       this.selectedAccount = account.account;
       this.newAccount = false;
-      this.readOnly = account.nodeType === NodeType.ArmAccount;   
+      this.readOnly = account.nodeType === NodeType.ArmAccount;
     });
   }
 
   private getChildren(node: TreeNode): Promise<Node[]> {
-    let data = node.data as Node;
+    const data = node.data as Node;
     console.log(`loading data for ${data}`);
     return data.loadChildren();
   }
 
   private add($event, node: TreeNode) {
     $event.stopPropagation();
-    let data = node.data as Node;
-    let accountType: number = this.nodes.indexOf(data);
+    const data = node.data as Node;
+    const accountType: number = this.nodes.indexOf(data);
     this.selectedAccount = new Account(accountType);
     this.selectedAccount.properties['mediaEnvironment'] = MediaEnvironment.Production;
     this.readOnly = false;

@@ -1,10 +1,11 @@
 import { Component, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MediaServiceFactory } from '../../media/media.service.factory';
-import { StreamingEndpoint } from "../../media/streamingendpoint";
+import { StreamingEndpoint } from '../../media/streamingendpoint';
 import { EntityComponent } from '../entity.component';
 import { AccountService } from '../../account.service';
 import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
+import { AdalService } from 'app/aad/adal.service';
 
 @Component({
   selector: 'app-streamingendpoints',
@@ -18,27 +19,31 @@ export class StreamingendpointsComponent extends EntityComponent<StreamingEndpoi
 
   columns = [
     {
-      prop: "Name"
+      prop: 'Name'
     }, {
-      prop: "State"
+      prop: 'State'
     }, {
-      prop: "HostName"
+      prop: 'HostName'
     }, {
-      prop: "ScaleUnits"
+      prop: 'ScaleUnits'
     }, {
-      prop: "CdnEnabled"
+      prop: 'CdnEnabled'
     }
   ]
 
-  constructor(activatedRoute: ActivatedRoute, mediaServiceFactory: MediaServiceFactory, accountService: AccountService, contextMenuService: ContextMenuService) {
-    super(activatedRoute, mediaServiceFactory, accountService, contextMenuService, "StreamingEndpoints");
-   }
+  constructor(
+    activatedRoute: ActivatedRoute,
+    mediaServiceFactory: MediaServiceFactory,
+    adalService: AdalService,
+    contextMenuService: ContextMenuService) {
+    super(activatedRoute, mediaServiceFactory, adalService, contextMenuService, 'StreamingEndpoints');
+  }
 
    private isStarted(item: StreamingEndpoint): boolean {
-     return item.State === "Running";
+     return item.State === 'Running';
    }
 
    private isStopped(item: StreamingEndpoint): boolean {
-     return item.State === "Stopped";
+     return item.State === 'Stopped';
    }
 }

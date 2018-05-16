@@ -8,6 +8,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { EntityComponent } from '../entity.component';
 import { AccountService } from '../../account.service';
 import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
+import { AdalService } from 'app/aad/adal.service';
 
 @Component({
   selector: 'app-channels',
@@ -21,25 +22,29 @@ export class ChannelsComponent extends EntityComponent<Channel> {
 
   columns = [
     {
-      prop: "Name"
+      prop: 'Name'
     }, {
-      prop: "State"
+      prop: 'State'
     }, {
-      prop: "EncodingType"
+      prop: 'EncodingType'
     }, {
-      prop: "Input.StreamingProtocol",
-      name: "Protocol"
+      prop: 'Input.StreamingProtocol',
+      name: 'Protocol'
     }];
 
-  constructor(activatedRoute: ActivatedRoute, mediaServiceFactory: MediaServiceFactory, accountService: AccountService, contextMenuService: ContextMenuService) {
-    super(activatedRoute, mediaServiceFactory, accountService, contextMenuService, "Channels");
-   }
+    constructor(
+      activatedRoute: ActivatedRoute,
+      mediaServiceFactory: MediaServiceFactory,
+      adalService: AdalService,
+      contextMenuService: ContextMenuService) {
+      super(activatedRoute, mediaServiceFactory, adalService, contextMenuService, 'Channels');
+    }
 
    private isStarted(item: Channel): boolean {
-     return item.State === "Running";
+     return item.State === 'Running';
    }
 
    private isStopped(item: Channel): boolean {
-     return item.State === "Stopped";
-   }   
+     return item.State === 'Stopped';
+   }
 }

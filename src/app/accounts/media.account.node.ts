@@ -7,7 +7,7 @@ import { AdalService } from '../aad/adal.service';
 import { Observable } from 'rxjs/Rx';
 import { NodeType } from './node.type';
 
-export class MediaAccountNode extends Node{
+export class MediaAccountNode extends Node {
 
     private loaded = false;
     public accountKey: string;

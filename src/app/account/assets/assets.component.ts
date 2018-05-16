@@ -6,6 +6,7 @@ import { AssetOptions } from '../../media/asset-options';
 import { EntityComponent } from '../entity.component';
 import { AccountService } from '../../account.service';
 import { ContextMenuComponent, ContextMenuService } from 'ngx-contextmenu';
+import { AdalService } from 'app/aad/adal.service';
 
 @Component({
   selector: 'app-assets',
@@ -19,18 +20,18 @@ export class AssetsComponent extends EntityComponent<Asset> {
 
   columns = [
     {
-      prop: "Name"
+      prop: 'Name'
     }, {
-      prop: "LastModified"
+      prop: 'LastModified'
     }, {
-      prop: "Options"
+      prop: 'Options'
     }];
 
   constructor(
-    activatedRoute:ActivatedRoute,
+    activatedRoute: ActivatedRoute,
     mediaServiceFactory: MediaServiceFactory,
-    accountService: AccountService,
-    contextMenuSerivce: ContextMenuService) {
-    super(activatedRoute, mediaServiceFactory, accountService, contextMenuSerivce, "Assets");
+    adalService: AdalService,
+    contextMenuService: ContextMenuService) {
+    super(activatedRoute, mediaServiceFactory, adalService, contextMenuService, 'Assets');
   }
 }

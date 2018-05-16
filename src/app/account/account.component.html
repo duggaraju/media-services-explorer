@@ -1,32 +1,17 @@
-<div class="container-fluid">
-  <p>
-    <a [routerLink]="['/accounts']">Accounts</a>
-  </p>
-
-  <ul class="nav nav-pills">
+<div *ngIf="account" >
+  <h2>Account: {{account.name}}</h2>
+  <ul class="nav nav-pills" >
     <li class="nav-item">
-      <a class="nav-link" routerLinkActive="active" routerLink="assets" >Assets</a>
+      <a class="nav-link" routerLinkActive="active" [routerLink]="['assets', { name: account.name, url: account.properties.apiEndpoints[0].endpoint }]" >Assets</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" routerLinkActive="active" routerLink="channels" >Channels</a>
+      <a class="nav-link" routerLinkActive="active" [routerLink]="['channels']" >Channels</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link"  routerLinkActive="active" routerLink="origins">Streaming Endpoints</a>
+      <a class="nav-link" routerLinkActive="active" [routerLink]="['jobs']">Jobs</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" routerLinkActive="active" routerLink="jobs">Jobs</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" routerLinkActive="active" routerLink="locators">Locators</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" routerLinkActive="active" routerLink="accesspolicies">Access Policies</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" routerLinkActive="active" routerLink="deliverypolicies">Delivery Policies</a>
-    </li>
-    <li class="nav-item">
-      <a class="nav-link" routerLinkActive="active" routerLink="keys">Keys</a>
+      <a class="nav-link" routerLinkActive="active" [routerLink]="['locators']">Locators</a>
     </li>
   </ul>
   <div class="tab-content">

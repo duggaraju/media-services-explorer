@@ -24,16 +24,24 @@ import { ArmService } from './arm/arm.service';
 import { AdalService } from './aad/adal.service';
 import { AdalServiceFactory } from './aad/adal.service.factory';
 import { ContextMenuModule } from 'ngx-contextmenu';
-const routeTracing = false;
+import { OAuthCallbackComponent } from './oauth-callback/oauth-callback.component';
+import { OAuthCallbackGuard } from 'app/oauth-callback.guard';
+import { LoginComponent } from './login/login.component';
+import { AdalConfigService } from 'app/aad/adal.config.service';
+import { EnsureAuthenticatedGuard } from 'app/ensure-authenticated.guard';
+const routeTracing = true;
 
 export const routes: Route[] = [
-  { path: '', redirectTo: 'accounts', pathMatch: 'full'},
-  { path: 'accounts', component: AccountsComponent },
+  { path: '', redirectTo: 'login', pathMatch: 'full'},
+  { path: 'id_token', component: OAuthCallbackComponent, canActivate: [ OAuthCallbackGuard ] },
+  { path: 'access_token', component: OAuthCallbackComponent, canActivate: [ OAuthCallbackGuard ]},
+  { path: 'login', component: LoginComponent },
   {
-    path: 'account/:account',
-    component: AccountComponent,
+    path: 'accounts',
+    component: AccountsComponent,
+    canActivate: [ EnsureAuthenticatedGuard ],
     children: [
-      { path: '', redirectTo: 'assets', pathMatch: 'full' },
+      { path: '', redirectTo: 'accounts', pathMatch: 'full' },
       { path: 'assets', component: AssetsComponent },
       { path: 'channels', component: ChannelsComponent },
       { path: 'origins', component: StreamingendpointsComponent },
@@ -44,7 +52,7 @@ export const routes: Route[] = [
       { path: 'keys', component: KeysComponent }
     ]
   },
-  { path: '**', component: AccountsComponent },
+  { path: '**', component: AccountsComponent }
 ];
 
 @NgModule({
@@ -60,7 +68,9 @@ export const routes: Route[] = [
     LocatorsComponent,
     KeysComponent,
     AccessPoliciesComponent,
-    DeliveryPoliciesComponent
+    DeliveryPoliciesComponent,
+    OAuthCallbackComponent,
+    LoginComponent
   ],
   imports: [
     NgxDatatableModule,
@@ -69,15 +79,18 @@ export const routes: Route[] = [
     HttpModule,
     TreeModule,
     ContextMenuModule,
-    RouterModule.forRoot(routes, {  enableTracing: routeTracing, useHash: false })
+    RouterModule.forRoot(routes, {  enableTracing: routeTracing, useHash: true })
   ],
   providers: [
     // { provide: LocationStrategy, useClass: HashLocationStrategy },
     // { provide:APP_BASE_HREF,  useValue: location.pathname },
     MediaServiceFactory,
     AccountService,
-    AdalServiceFactory,
-    ArmService
+    AdalConfigService,
+    AdalService,
+    ArmService,
+    OAuthCallbackGuard,
+    EnsureAuthenticatedGuard
   ],
   bootstrap: [AppComponent ]
 })

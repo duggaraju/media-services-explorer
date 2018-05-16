@@ -1,7 +1,6 @@
 import { TokenProvider } from '../token.provider';
 
-export interface MediaAccount
-{
+export interface MediaAccount {
     tokenProvider: TokenProvider;
     accountName: string;
     apiUrl: string;

@@ -1,25 +1,21 @@
 <div class="container-fluid">
   <div class="row">
-    <div class="col-md-4">
+    <div class="col-md-3 accounts">
       <h2>Accounts</h2>
       <tree-root [nodes]="nodes"
+          focused="true"
           [options]="treeOptions"
-          (onActivate)="onActivate($event.node)" >
+          (activate)="onActivate($event.node)" >
           <ng-template #treeNodeTemplate let-node>
               <span title="{{node.data.subTitle}}">{{ node.data.name }}</span>
               <button *ngIf="!node.isRoot && !node.isLeaf" (click)="refresh($event, node)" ><i class="fa fa-refresh" aria-hidden="true"></i></button> 
               <button *ngIf="node.isRoot" (click)="add($event, node)"><i class="fa fa-plus"></i></button>
           </ng-template>
-          <ng-template #loadingTemplate>Loading, please hold....</ng-template>
+          <ng-template #loadingTemplate>Loading, please wait....</ng-template>
       </tree-root>
     </div>
-    <div class="col-md-8">
-      <account-details 
-          [account]="selectedAccount"
-          [readOnly]="readOnly"
-          [newAccount]="newAccount"
-          (accountUpdated)="onUpdate($event)"
-          (accountDeleted)="onDelete($event)" ></account-details>
+    <div class="col-md-9 account">
+      <app-account [account]="selectedAccount" ></app-account>
     </div>
   </div>
   <div class="dropdown-menu" >

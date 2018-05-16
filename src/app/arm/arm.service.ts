@@ -10,36 +10,36 @@ import { MediaAccountKeys } from './media.account.keys';
 @Injectable()
 export class ArmService {
 
-  public readonly managementUrl: string = "https://management.azure.com";
-  public readonly managementResource: string = "https://management.azure.com/"
+  public static readonly managementUrl: string = 'https://management.azure.com';
+  public static readonly managementResource: string = 'https://management.azure.com/'
 
-  public readonly armApiVersion = "2014-04-01";
-  public readonly msApiVersion = "2015-10-01";
+  public readonly armApiVersion = '2014-04-01';
+  public readonly msApiVersion = '2015-10-01';
+  private tokenProvider: TokenProvider;
 
-  constructor(private http:Http) {
+  constructor(private http: Http, private adalService: AdalService) {
+    this.tokenProvider = adalService.getTokenProvider(ArmService.managementResource);
   }
 
-  public getSubscriptions(adalService: AdalService, baseUrl?: string): Observable<Subscription[]> {
-    let url = `${baseUrl || this.managementUrl}/subscriptions?api-version=${this.armApiVersion}`;
-    let tokenProvider = adalService.getTokenProvider(this.managementResource);
-    return tokenProvider.getAuthorizationHeaders()
-        .flatMap(headers => this.http.get(url, new RequestOptions({ headers:headers})))
+
+  public getSubscriptions(baseUrl?: string): Observable<Subscription[]> {
+    const url = `${baseUrl || ArmService.managementUrl}/subscriptions?api-version=${this.armApiVersion}`;
+    return this.tokenProvider.getAuthorizationHeaders()
+        .flatMap(headers => this.http.get(url, new RequestOptions({ headers: headers})))
         .map(response => response.json().value);
   }
 
-  public getMediaAccounts(adalService: AdalService, id: string, baseUrl?: string): Observable<MediaAccountInfo[]> {
-    let url = `${baseUrl || this.managementUrl}${id}/providers/microsoft.media/mediaservices?api-version=${this.msApiVersion}`;
-    let tokenProvider = adalService.getTokenProvider(this.managementResource);
-    return tokenProvider.getAuthorizationHeaders()
-        .flatMap(headers => this.http.get(url, new RequestOptions({ headers:headers})))
+  public getMediaAccounts(id: string, baseUrl?: string): Observable<MediaAccountInfo[]> {
+    const url = `${baseUrl || ArmService.managementUrl}${id}/providers/microsoft.media/mediaservices?api-version=${this.msApiVersion}`;
+    return this.tokenProvider.getAuthorizationHeaders()
+        .flatMap(headers => this.http.get(url, new RequestOptions({ headers: headers})))
         .map(response => response.json().value);
   }
 
-  public getMediaAccountKeys(adalService: AdalService, id: string, baseUrl?: string): Observable<MediaAccountKeys> {
-    let url = `${baseUrl || this.managementUrl}${id}/listKeys?api-version=${this.msApiVersion}`;
-    let tokenProvider = adalService.getTokenProvider(this.managementResource);
-    return tokenProvider.getAuthorizationHeaders()
-        .flatMap(headers => this.http.post(url, null, new RequestOptions({ headers:headers})))
-        .map(response => response.json());    
+  public getMediaAccountKeys(id: string, baseUrl?: string): Observable<MediaAccountKeys> {
+    const url = `${baseUrl || ArmService.managementUrl}${id}/listKeys?api-version=${this.msApiVersion}`;
+    return this.tokenProvider.getAuthorizationHeaders()
+        .flatMap(headers => this.http.post(url, null, new RequestOptions({ headers: headers})))
+        .map(response => response.json());
   }
 }

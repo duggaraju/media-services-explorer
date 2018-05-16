@@ -1,5 +1,5 @@
 import { OnInit } from '@angular/core';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute, Params, ParamMap } from '@angular/router';
 import { Observable } from 'rxjs/Rx';
 import { MediaAccount } from '../media/mediaaccount';
 import { MediaService } from '../media/media.service';
@@ -12,6 +12,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { MediaEntityService } from '../media/media.entity.service';
 import { MediaEntity } from '../media/media.entity';
 import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
+import { AdalService } from 'app/aad/adal.service';
 
 export abstract class EntityComponent<T extends MediaEntity> implements OnInit {
 
@@ -28,15 +29,18 @@ export abstract class EntityComponent<T extends MediaEntity> implements OnInit {
   constructor(
       private activatedRoute: ActivatedRoute,
       private mediaServiceFactory: MediaServiceFactory,
-      private accountService: AccountService,
+      private adalService: AdalService,
       private contextMenuSerivce: ContextMenuService,
       private entityName: string) {
   }
 
   ngOnInit(): void {
-    this.activatedRoute.parent.params.subscribe((params: Params) => {
-      const account = JSON.parse(params['account']) as Account;
-      const mediaAccount = this.accountService.getMediaAccount(account);
+    this.activatedRoute.paramMap.subscribe((paramMap: ParamMap) => {
+      const mediaAccount = <MediaAccount> {
+        accountName: paramMap.get('name'),
+        tokenProvider: this.adalService.getTokenProvider('https://rest.media.azure.net'),
+        apiUrl: paramMap.get('url')
+      }
       const mediaService = this.mediaServiceFactory.getMediaService(mediaAccount);
       mediaService.getEntityService<T>(this.entityName).subscribe(entities => {
         this.entities = entities;

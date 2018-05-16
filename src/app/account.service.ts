@@ -14,9 +14,9 @@ import { MediaEnvironment } from './mediaenvironment';
 @Injectable()
 export class AccountService {
 
-  constructor(private http:Http) { }
-
   private accounts: Account[];
+
+  constructor(private http: Http) { }
 
   public getAccounts(): Account[] {
     if (!this.accounts) {
@@ -27,8 +27,8 @@ export class AccountService {
 
   public deleteAccount(account: Account): void {
     console.log(`Looking to delete account name:${account.name} of type:${AccountType[account.accountType]}`);
-    let index = this.accounts.indexOf(account);
-    if (index != -1) {
+    const index = this.accounts.indexOf(account);
+    if (index !== -1) {
       console.log(`Deleting account name:${account.name} of type:${AccountType[account.accountType]}`);
       this.accounts.splice(index, 1);
       this.saveAccounts();
@@ -37,7 +37,7 @@ export class AccountService {
 
   public updateAccount(account: Account): boolean {
     let added = false;
-    let actualAccount = this.accounts.find(element => element === account);
+    const actualAccount = this.accounts.find(element => element === account);
     if (actualAccount) {
       console.log(`Updating account:${account.name} type:${AccountType[account.accountType]}`)
     } else {
@@ -49,24 +49,23 @@ export class AccountService {
     return added;
   }
 
-  public getMediaAccount(account:Account): MediaAccount {
-    switch(account.accountType) {
+  public getMediaAccount(account: Account): MediaAccount {
+    switch (account.accountType) {
         case AccountType.AcsAccount:
         case AccountType.ArmAccount:
             return this.getAcsAccount(account);
         case AccountType.AadAccount:
-          throw new Error("Not yet supported!");
+          throw new Error('Not yet supported!');
     }
   }
 
   private loadAccounts(): void {
-    var accounts = localStorage.getItem("accounts");
+    const accounts = localStorage.getItem('accounts');
     console.log(`found accounts in local storage ${accounts}`);
     if (accounts) {
       try {
         this.accounts = JSON.parse(accounts) as Account[];
-      }
-      catch(error) {
+      } catch (error) {
         console.log(`Invalid JSON saved so ignoring it. ${error}`);
       }
     } else {
@@ -75,15 +74,15 @@ export class AccountService {
     console.log(`Total accounts: ${this.accounts.length}`);
   }
 
-  private saveAccounts(): void{
+  private saveAccounts(): void {
     console.log(`Saving Accounts.... Total: ${this.accounts.length}`);
-    localStorage.setItem("accounts", JSON.stringify(this.accounts));    
+    localStorage.setItem('accounts', JSON.stringify(this.accounts));
   }
 
   private getAcsAccount(account: Account): MediaAccount {
-    let properties = <AcsAccountProperties> account.properties;
+    const properties = <AcsAccountProperties> account.properties;
     if (properties.mediaEnvironment !== MediaEnvironment.Custom) {
-      let settings = this.acsEnvironments.get(properties.mediaEnvironment);
+      const settings = this.acsEnvironments.get(properties.mediaEnvironment);
       Object.assign(properties, settings);
     }
     return <MediaAccount> {
@@ -93,7 +92,7 @@ export class AccountService {
     };
   }
 
-  private getAcsCredentials(account: Account, properties:AcsAccountProperties): AcsCredentials {
+  private getAcsCredentials(account: Account, properties: AcsAccountProperties): AcsCredentials {
     return <AcsCredentials> {
       accountName: account.name,
       primaryKey: properties.primaryKey,
@@ -102,21 +101,21 @@ export class AccountService {
     }
   }
 
-  readonly acsEnvironments:Map<MediaEnvironment, AcsAccountProperties> = 
+  readonly acsEnvironments: Map<MediaEnvironment, AcsAccountProperties> =
     new Map<MediaEnvironment, AcsAccountProperties>()
         .set(MediaEnvironment.Production, {
-            apiEndpoints: [ { endpoint:"https://media.windows.net" }],
-            scope: "urn:WindowsAzureMediaServices",
-            primaryAuthEndpoint:  "https://wamsprodglobal001acs.accesscontrol.windows.net",
-            secondaryAuthEndpoint: "https://wamsprodglobal002acs.accesscontrol.windows.net"
+            apiEndpoints: [ { endpoint: 'https://media.windows.net' }],
+            scope: 'urn:WindowsAzureMediaServices',
+            primaryAuthEndpoint:  'https://wamsprodglobal001acs.accesscontrol.windows.net',
+            secondaryAuthEndpoint: 'https://wamsprodglobal002acs.accesscontrol.windows.net'
         }).set(MediaEnvironment.Mooncake, {
-            apiEndpoints: [ { endpoint: "https://media.chinacloud.cn" }],
-            scope: "urn:WindowsAzureMediaServices",
-            primaryAuthEndpoint: "https://"
+            apiEndpoints: [ { endpoint: 'https://media.chinacloud.cn' }],
+            scope: 'urn:WindowsAzureMediaServices',
+            primaryAuthEndpoint: 'https://'
         }).set(MediaEnvironment.BlackForest, {
           apiEndpoints: [],
-          scope: "urn.WindowsAzureMediaServices",
-          primaryAuthEndpoint: "",
-          secondaryAuthEndpoint: ""
-        });  
+          scope: 'urn.WindowsAzureMediaServices',
+          primaryAuthEndpoint: '',
+          secondaryAuthEndpoint: ''
+        });
 }

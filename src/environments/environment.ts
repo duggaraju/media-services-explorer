@@ -7,10 +7,10 @@ export const environment = {
   production: false,
   aadAuthority: 'https://login.microsoftonline.com/',
   aadTenant: 'common',
-  aadClientId: '789b7daa-39aa-4a80-925c-5af317dcbef1',
+  aadClientId: '5252bdcb-f16e-4ec2-9605-c743c92829da',
   graphResource: 'https://graph.microsoft.com',
   adalLogging: true,
   adalLogLevel: 3,
   // this is not working with electron.
-  popUp: true
+  popUp: false
 };

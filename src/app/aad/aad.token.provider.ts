@@ -11,7 +11,6 @@ export class AadTokenProvider implements TokenProvider {
     }
 
     getAuthorizationHeaders(): Observable<Headers> {
-        this.adalService.getCachedUser();
         const token = this.adalService.getCachedToken(this.resource);
         if (!token) {
             console.log(`acquiring token for resource:${this.resource}..`);

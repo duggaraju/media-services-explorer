@@ -19,7 +19,7 @@ export class AzureSubscriptionNode extends Node {
     }
 
     private loadMediaAccounts(): Observable<any> {
-        console.log("loading media accounts...");
-        return this.armService.getMediaAccounts(this.adalService, this.subscritpion.id);
+        console.log('loading media accounts...');
+        return this.armService.getMediaAccounts(this.subscritpion.id);
     }
 }

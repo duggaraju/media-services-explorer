@@ -5,6 +5,7 @@ import { ContentKey } from '../../media/contentkey';
 import { MediaServiceFactory } from '../../media/media.service.factory';
 import { AccountService } from '../../account.service';
 import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
+import { AdalService } from 'app/aad/adal.service';
 
 @Component({
   selector: 'app-keys',
@@ -25,8 +26,12 @@ export class KeysComponent extends EntityComponent<ContentKey> {
       prop: 'ProtectionKeyType'
     }
   ]
-  
-  constructor(activatedRoute: ActivatedRoute, mediaServiceFactory: MediaServiceFactory, accountService: AccountService, contextMenuService: ContextMenuService) {
-    super(activatedRoute, mediaServiceFactory, accountService, contextMenuService, 'ContentKeys');
-   }
+
+  constructor(
+    activatedRoute: ActivatedRoute,
+    mediaServiceFactory: MediaServiceFactory,
+    adalService: AdalService,
+    contextMenuService: ContextMenuService) {
+    super(activatedRoute, mediaServiceFactory, adalService, contextMenuService, 'ContentKeys');
+  }
 }
