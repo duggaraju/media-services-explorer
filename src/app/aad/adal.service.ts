@@ -1,6 +1,7 @@
 /// <reference types="adal" />
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs/Rx';
+import { Observable, of, bindCallback } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { TokenProvider } from '../token.provider';
 import { AadTokenProvider } from './aad.token.provider';
 import * as adalLib from 'adal-angular/lib/adal';
@@ -36,17 +37,17 @@ export class AdalService {
   public acquireToken(resource: string): Observable<string> {
     const token = this.context.getCachedToken(resource);
     if (token) {
-      return Observable.of(token);
+      return of(token);
     }
-    const acquireToken = Observable.bindCallback(this.context.acquireToken.bind(this.context, resource), this.tokenSelector);
-    return acquireToken().catch(err => {
+    const acquireToken = bindCallback(this.context.acquireToken.bind(this.context, resource), this.tokenSelector);
+    return acquireToken().pipe(catchError(err => {
       console.log(`acquire token failed try interactive!!`);
-      const acquireTokenPopup = Observable.bindCallback(
+      const acquireTokenPopup = bindCallback(
         (<any>this.context).acquireTokenRedirect.bind(this.context, resource, undefined, undefined),
         this.tokenSelector);
         // return acquireTokenPopup();
         return 'Error';
-    });
+    }));
   }
 
   public acquireTokenInteractive(resource: string): void {

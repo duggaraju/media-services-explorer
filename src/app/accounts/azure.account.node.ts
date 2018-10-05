@@ -1,4 +1,5 @@
-import { Observable } from 'rxjs/Rx';
+import { Observable, interval, of } from 'rxjs';
+import { map, take, filter } from 'rxjs/operators';
 import { AdalService } from '../aad/adal.service';
 import { Node } from './node';
 import { Account } from '../account';
@@ -14,11 +15,11 @@ export class AzureAccountNode extends Node {
     }
 
     public loadChildren(): Promise<Node[]> {
-        return this.loadSubscriptions()
-            .map(subscriptions => subscriptions.map((s, i) => {
+        return this.loadSubscriptions().pipe(
+            map(subscriptions => subscriptions.map((s, i) => {
                 const node = new AzureSubscriptionNode(s, this.adalService, this.armService);
                 return node;
-            })).toPromise();
+            }))).toPromise();
     }
 
     private loginIfNeeded(): Observable<boolean> {
@@ -26,13 +27,13 @@ export class AzureAccountNode extends Node {
         if (!user) {
             console.log('getting children by logging...');
             this.adalService.login();
-            return Observable.interval(1000)
-                        .map(value => this.adalService.loginInProgress())
-                        .filter( value => !value)
-                        .take(1);
+            return interval(1000).pipe(
+                        map(value => this.adalService.loginInProgress()),
+                        filter( value => !value),
+                        take(1));
         }
         console.log(`found user ${user.userName} ${user.profile}`);
-        return Observable.of(true);
+        return of(true);
     }
 
     private loadSubscriptions(): Observable<Subscription[]> {

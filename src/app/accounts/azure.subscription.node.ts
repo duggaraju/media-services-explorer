@@ -1,6 +1,7 @@
 import { AzureMediaAccountNode } from './azure.media.account.node';
 import { Node } from './node';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import { ArmService } from '../arm/arm.service';
 import { AdalService } from '../aad/adal.service';
 import { NodeType } from './node.type';
@@ -13,8 +14,8 @@ export class AzureSubscriptionNode extends Node {
     }
 
     public loadChildren(): Promise<AzureMediaAccountNode[]> {
-        return this.loadMediaAccounts()
-        .map( accounts => accounts.map((a, i) => new AzureMediaAccountNode(a, this.armService, this.adalService)))
+        return this.loadMediaAccounts().pipe(
+        map(accounts => accounts.map((a, i) => new AzureMediaAccountNode(a, this.armService, this.adalService))))
         .toPromise();
     }
 

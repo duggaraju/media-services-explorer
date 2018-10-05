@@ -3,12 +3,6 @@ import { Http } from '@angular/http';
 import { Account, AcsAccountProperties } from './account';
 import { AccountType } from './account.type';
 import { MediaAccount } from './media/mediaaccount';
-import { TokenProvider } from './token.provider';
-import { AcsService } from './acs/acs.service';
-import { AadTokenProvider } from './aad/aad.token.provider';
-import { AdalService } from './aad/adal.service';
-import { AcsCredentials } from './acs/acs.credentials';
-import { MediaEnvironment } from './mediaenvironment';
 
 
 @Injectable()
@@ -53,7 +47,7 @@ export class AccountService {
     switch (account.accountType) {
         case AccountType.AcsAccount:
         case AccountType.ArmAccount:
-            return this.getAcsAccount(account);
+            return null;
         case AccountType.AadAccount:
           throw new Error('Not yet supported!');
     }
@@ -78,44 +72,4 @@ export class AccountService {
     console.log(`Saving Accounts.... Total: ${this.accounts.length}`);
     localStorage.setItem('accounts', JSON.stringify(this.accounts));
   }
-
-  private getAcsAccount(account: Account): MediaAccount {
-    const properties = <AcsAccountProperties> account.properties;
-    if (properties.mediaEnvironment !== MediaEnvironment.Custom) {
-      const settings = this.acsEnvironments.get(properties.mediaEnvironment);
-      Object.assign(properties, settings);
-    }
-    return <MediaAccount> {
-      accountName: account.name,
-      apiUrl: properties.apiEndpoints[0].endpoint,
-      tokenProvider: new AcsService(this.http, this.getAcsCredentials(account, properties))
-    };
-  }
-
-  private getAcsCredentials(account: Account, properties: AcsAccountProperties): AcsCredentials {
-    return <AcsCredentials> {
-      accountName: account.name,
-      primaryKey: properties.primaryKey,
-      scope: properties.scope,
-      primaryAuthAddress: properties.primaryAuthEndpoint
-    }
-  }
-
-  readonly acsEnvironments: Map<MediaEnvironment, AcsAccountProperties> =
-    new Map<MediaEnvironment, AcsAccountProperties>()
-        .set(MediaEnvironment.Production, {
-            apiEndpoints: [ { endpoint: 'https://media.windows.net' }],
-            scope: 'urn:WindowsAzureMediaServices',
-            primaryAuthEndpoint:  'https://wamsprodglobal001acs.accesscontrol.windows.net',
-            secondaryAuthEndpoint: 'https://wamsprodglobal002acs.accesscontrol.windows.net'
-        }).set(MediaEnvironment.Mooncake, {
-            apiEndpoints: [ { endpoint: 'https://media.chinacloud.cn' }],
-            scope: 'urn:WindowsAzureMediaServices',
-            primaryAuthEndpoint: 'https://'
-        }).set(MediaEnvironment.BlackForest, {
-          apiEndpoints: [],
-          scope: 'urn.WindowsAzureMediaServices',
-          primaryAuthEndpoint: '',
-          secondaryAuthEndpoint: ''
-        });
 }

@@ -1,5 +1,5 @@
 import { Headers } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 
 export interface TokenProvider {
 

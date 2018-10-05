@@ -1,6 +1,6 @@
 import { Account } from '../account';
 import { AccountType } from '../account.type';
-import { Observable } from 'rxjs/Rx';
+import { Observable, of } from 'rxjs';
 import { NodeType } from './node.type';
 
 export class Node {
@@ -19,6 +19,6 @@ export class Node {
     }
 
     public onActivate(): Observable<boolean> {
-        return Observable.of(true);
+        return of(true);
     }
 }

@@ -1,6 +1,6 @@
 import { OnInit } from '@angular/core';
 import { ActivatedRoute, Params, ParamMap } from '@angular/router';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
 import { MediaAccount } from '../media/mediaaccount';
 import { MediaService } from '../media/media.service';
 import { MediaServiceFactory } from '../media/media.service.factory';

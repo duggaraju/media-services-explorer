@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, RequestOptions, Response } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs';
+import { flatMap,  map } from 'rxjs/operators';
 import { TokenProvider } from '../token.provider';
 import { AdalService } from '../aad/adal.service';
 import { Subscription } from './subscription';
@@ -24,22 +25,22 @@ export class ArmService {
 
   public getSubscriptions(baseUrl?: string): Observable<Subscription[]> {
     const url = `${baseUrl || ArmService.managementUrl}/subscriptions?api-version=${this.armApiVersion}`;
-    return this.tokenProvider.getAuthorizationHeaders()
-        .flatMap(headers => this.http.get(url, new RequestOptions({ headers: headers})))
-        .map(response => response.json().value);
+    return this.tokenProvider.getAuthorizationHeaders().pipe(
+        flatMap(headers => this.http.get(url, new RequestOptions({ headers: headers}))),
+        map(response => response.json().value));
   }
 
   public getMediaAccounts(id: string, baseUrl?: string): Observable<MediaAccountInfo[]> {
     const url = `${baseUrl || ArmService.managementUrl}${id}/providers/microsoft.media/mediaservices?api-version=${this.msApiVersion}`;
-    return this.tokenProvider.getAuthorizationHeaders()
-        .flatMap(headers => this.http.get(url, new RequestOptions({ headers: headers})))
-        .map(response => response.json().value);
+    return this.tokenProvider.getAuthorizationHeaders().pipe(
+        flatMap(headers => this.http.get(url, new RequestOptions({ headers: headers}))),
+        map(response => response.json().value));
   }
 
   public getMediaAccountKeys(id: string, baseUrl?: string): Observable<MediaAccountKeys> {
     const url = `${baseUrl || ArmService.managementUrl}${id}/listKeys?api-version=${this.msApiVersion}`;
-    return this.tokenProvider.getAuthorizationHeaders()
-        .flatMap(headers => this.http.post(url, null, new RequestOptions({ headers: headers})))
-        .map(response => response.json());
+    return this.tokenProvider.getAuthorizationHeaders().pipe(
+        flatMap(headers => this.http.post(url, null, new RequestOptions({ headers: headers}))),
+        map(response => response.json()));
   }
 }
