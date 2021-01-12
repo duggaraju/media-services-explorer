@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AdalService } from '../aad/adal.service';
+import { AadService } from '../aad/aad.service';
 
 @Component({
   selector: 'app-oauth-callback',
@@ -9,10 +9,10 @@ import { AdalService } from '../aad/adal.service';
 })
 export class OAuthCallbackComponent implements OnInit {
 
-  constructor(private router: Router, private adalService: AdalService) { }
+  constructor(private router: Router, private aadService: AadService) { }
 
-  ngOnInit() {
-    const user = this.adalService.getCachedUser();
-    console.log(`in callback component with user ${user}`)
+  ngOnInit(): void {
+    const user = this.aadService.getCachedUser();
+    console.log(`in callback component with user ${user}`);
   }
 }

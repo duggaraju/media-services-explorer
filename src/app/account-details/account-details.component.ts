@@ -16,10 +16,10 @@ export class AccountDetailsComponent {
   public MediaEnvironment = MediaEnvironment;
   public AccountType = AccountType;
 
-  environments: Number[] = Object.keys(MediaEnvironment).filter(x => !isNaN(Number(x))).map((v, i, a) => Number(v));
+  environments: number[] = Object.keys(MediaEnvironment).filter(x => !isNaN(Number(x))).map((v, i, a) => Number(v));
 
   @Input()
-  account: Account;
+  account: Account = {} as Account;
 
   @Input()
   readOnly = true;
@@ -33,26 +33,26 @@ export class AccountDetailsComponent {
   @Output()
   accountDeleted = new EventEmitter();
 
-  constructor(private router: Router, private accountService:AccountService) {
+  constructor(private router: Router, private accountService: AccountService) {
   }
 
-  onClick() {
+  onClick(): void {
     const json = JSON.stringify(this.account);
     console.log(`JSON for account is ${json}`);
     this.router.navigate(['account', json]);
   }
 
-  onDelete() {
+  onDelete(): void {
     this.accountDeleted.emit(this.account);
   }
 
-  onUpdate() {
+  onUpdate(): void {
     this.accountUpdated.emit(this.account);
   }
 
-  onChange(event: Event) {
-    if (!this.readOnly && !this.account.properties['apiEndpoints']) {
-      this.account.properties['apiEndpoints'] = [{}];
+  onChange(event: Event): void {
+    if (!this.readOnly && !this.account?.properties.apiEndpoints) {
+      this.account.properties.apiEndpoints = [{}];
     }
   }
 }

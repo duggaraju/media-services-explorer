@@ -1,18 +1,13 @@
-import { Node } from './node';
+import { AccountNode } from './account.node';
 import { Account } from '../account';
-import { AccountType } from '../account.type';
 import { MediaEnvironment } from '../mediaenvironment';
-import { ArmService } from '../arm/arm.service';
-import { AdalService } from '../aad/adal.service';
-import { NodeType } from './node.type';
 
-export class MediaAccountNode extends Node {
+export class MediaAccountNode extends AccountNode {
 
-    private loaded = false;
-    public accountKey: string;
-    public mediaEnvironment: MediaEnvironment;
+    public accountKey?: string;
+    public mediaEnvironment: MediaEnvironment = MediaEnvironment.Production;
 
     constructor(account: Account) {
-        super(account.name, <number>account.accountType, account);
+        super(account.name, account.accountType as number, account);
     }
 }

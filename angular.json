@@ -23,10 +23,10 @@
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.css",
               "node_modules/font-awesome/css/font-awesome.css",
-              "node_modules/@swimlane/ngx-datatable/release/index.css",
-              "node_modules/@swimlane/ngx-datatable/release/themes/material.css",
-              "node_modules/@swimlane/ngx-datatable/release/assets/icons.css",
-              "node_modules/angular-tree-component/dist/angular-tree-component.css",
+              "node_modules/@swimlane/ngx-datatable/index.css",
+              "node_modules/@swimlane/ngx-datatable/themes/material.css",
+              "node_modules/@swimlane/ngx-datatable/assets/icons.css",
+              "node_modules/@circlon/angular-tree-component/css/angular-tree-component.css",
               "src/styles.scss"
             ],
             "scripts": [
@@ -94,7 +94,7 @@
               "node_modules/@swimlane/ngx-datatable/release/index.css",
               "node_modules/@swimlane/ngx-datatable/release/themes/material.css",
               "node_modules/@swimlane/ngx-datatable/release/assets/icons.css",
-              "node_modules/angular-tree-component/dist/angular-tree-component.css",
+              "node_modules/@circlon/angular-tree-component/styles/angular-tree-component.css",
               "src/styles.scss"
             ],
             "assets": [

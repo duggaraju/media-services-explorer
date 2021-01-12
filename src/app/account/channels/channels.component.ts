@@ -8,7 +8,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { EntityComponent } from '../entity.component';
 import { AccountService } from '../../account.service';
 import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
-import { AdalService } from 'app/aad/adal.service';
+import { AadService } from 'app/aad/aad.service';
 
 @Component({
   selector: 'app-channels',
@@ -18,7 +18,7 @@ import { AdalService } from 'app/aad/adal.service';
 export class ChannelsComponent extends EntityComponent<Channel> {
 
   @ViewChild('channelMenu')
-  contextMenu: ContextMenuComponent;
+  contextMenu?: ContextMenuComponent;
 
   columns = [
     {
@@ -35,9 +35,9 @@ export class ChannelsComponent extends EntityComponent<Channel> {
     constructor(
       activatedRoute: ActivatedRoute,
       mediaServiceFactory: MediaServiceFactory,
-      adalService: AdalService,
+      aadService: AadService,
       contextMenuService: ContextMenuService) {
-      super(activatedRoute, mediaServiceFactory, adalService, contextMenuService, 'Channels');
+      super(activatedRoute, mediaServiceFactory, aadService, contextMenuService, 'Channels');
     }
 
    private isStarted(item: Channel): boolean {

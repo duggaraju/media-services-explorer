@@ -1,30 +1,24 @@
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, NavigationExtras } from '@angular/router';
-import { AdalService } from './aad/adal.service';
+import { AadService } from './aad/aad.service';
 
 @Injectable()
 export class EnsureAuthenticatedGuard implements CanActivate {
 
-    constructor(private router: Router, private adalService: AdalService) {}
+    constructor(private router: Router, private aadService: AadService) {}
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
 
         const navigationExtras: NavigationExtras = {
-            queryParams: { 'redirectUrl': route.url }
+            queryParams: { redirectUrl: route.url }
         };
 
-        const user = this.adalService.getCachedUser();
+        const user = this.aadService.getCachedUser();
         if (!user) {
             this.router.navigate(['login'], navigationExtras);
         }
 
-        const resource = 'https://rest.media.azure.net';
-        const token = this.adalService.getCachedToken(resource);
-        console.log(`cached token is ${token}`);
-        if (!token) {
-            this.adalService.acquireTokenInteractive('https://rest.media.azure.net');
-        }
         return true;
     }
 }

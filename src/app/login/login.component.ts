@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AdalService } from '../aad/adal.service'
+import { AadService } from '../aad/aad.service'
 
 @Component({
   selector: 'app-login',
@@ -8,10 +8,10 @@ import { AdalService } from '../aad/adal.service'
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private armService: AdalService) { }
+  constructor(private aadService: AadService) { }
 
   ngOnInit() {
-    this.armService.login();
+    this.aadService.login();
   }
 
 }

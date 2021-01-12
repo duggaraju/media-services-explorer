@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { MediaAccount } from './mediaaccount';
 import { MediaService } from './media.service';
 
@@ -7,7 +7,7 @@ import { MediaService } from './media.service';
 export class MediaServiceFactory {
     private services = new Map<string, MediaService>();
 
-    constructor(private http: Http) {
+    constructor(private http: HttpClient) {
     }
 
     public getMediaService(account: MediaAccount): MediaService {

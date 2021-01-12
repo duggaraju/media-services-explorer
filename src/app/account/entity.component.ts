@@ -12,7 +12,7 @@ import { NgxDatatableModule } from '@swimlane/ngx-datatable';
 import { MediaEntityService } from '../media/media.entity.service';
 import { MediaEntity } from '../media/media.entity';
 import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
-import { AdalService } from 'app/aad/adal.service';
+import { AadService } from 'app/aad/aad.service';
 
 export abstract class EntityComponent<T extends MediaEntity> implements OnInit {
 
@@ -22,34 +22,34 @@ export abstract class EntityComponent<T extends MediaEntity> implements OnInit {
   rows: T[] = [];
   count = 0;
   pageSize = 50;
-  private entities: MediaEntityService<T>;
-  protected contextMenu: ContextMenuComponent;
+  private entities?: MediaEntityService<T>;
+  protected contextMenu?: ContextMenuComponent;
 
 
   constructor(
       private activatedRoute: ActivatedRoute,
       private mediaServiceFactory: MediaServiceFactory,
-      private adalService: AdalService,
-      private contextMenuSerivce: ContextMenuService,
+      private aadService: AadService,
+      private contextMenuService: ContextMenuService,
       private entityName: string) {
   }
 
   ngOnInit(): void {
     this.activatedRoute.paramMap.subscribe((paramMap: ParamMap) => {
-      const mediaAccount = <MediaAccount> {
+      const mediaAccount = {
         accountName: paramMap.get('name'),
-        tokenProvider: this.adalService.getTokenProvider('https://rest.media.azure.net'),
+        tokenProvider: this.aadService.getTokenProvider('https://rest.media.azure.net'),
         apiUrl: paramMap.get('url')
-      }
+      } as MediaAccount;
       const mediaService = this.mediaServiceFactory.getMediaService(mediaAccount);
       mediaService.getEntityService<T>(this.entityName).subscribe(entities => {
         this.entities = entities;
         this.refresh();
-      })
+      });
     });
   }
 
-  private onPage(event): void {
+  private onPage(event: any): void {
     console.log(`Selected page ${event.offset} ${event.limit}`);
     this.query.skip = event.offset * event.limit;
     this.offset = event.offset;
@@ -57,7 +57,7 @@ export abstract class EntityComponent<T extends MediaEntity> implements OnInit {
   }
 
   private refresh(): void {
-    this.entities.query(this.query).subscribe(result => {
+    this.entities?.query(this.query).subscribe(result => {
         this.count = result.count;
         // @swimlane/ngx-datatable always expects the row indices to match those of the full data set.
         // create a sparse array with thos indices.
@@ -68,18 +68,18 @@ export abstract class EntityComponent<T extends MediaEntity> implements OnInit {
     });
   }
 
-  private onContextMenu(contextMenuEvent) {
+  private onContextMenu(contextMenuEvent: any): void {
     console.log(`context menu event ${contextMenuEvent.event.screenX}:${contextMenuEvent.event.screenY} for ${contextMenuEvent.row.Id}`);
-    this.contextMenuSerivce.show.next({
+    this.contextMenuService.show.next({
       event: contextMenuEvent.event,
       item: contextMenuEvent.row,
       contextMenu: this.contextMenu
-    })
+    });
     contextMenuEvent.event.preventDefault();
     contextMenuEvent.event.stopPropagation();
   }
 
-  private deleteEntity(item: T) {
+  private deleteEntity(item: T): void {
     alert(`Are you sure you want to delete ${item.Id}`);
   }
 }

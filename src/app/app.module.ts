@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { LocationStrategy, HashLocationStrategy, APP_BASE_HREF } from '@angular/common';
 import { NgModule } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { HttpModule, JsonpModule } from '@angular/http';
+import { HttpClientModule, } from '@angular/common/http';
 import { RouterModule, Route } from '@angular/router';
 import { AppComponent } from './app.component';
 import { AccountComponent } from './account/account.component';
@@ -19,15 +19,15 @@ import { KeysComponent } from './account/keys/keys.component';
 import { AccessPoliciesComponent } from './account/access-policies/access-policies.component';
 import { DeliveryPoliciesComponent } from './account/delivery-policies/delivery-policies.component';
 import { AccountService } from './account.service';
-import { TreeModule } from 'angular-tree-component';
+import { TreeModule } from '@circlon/angular-tree-component';
 import { ArmService } from './arm/arm.service';
-import { AdalService } from './aad/adal.service';
-import { AdalServiceFactory } from './aad/adal.service.factory';
+import { AadService } from './aad/aad.service';
+import { AadServiceFactory } from './aad/aad.service.factory';
 import { ContextMenuModule } from 'ngx-contextmenu';
 import { OAuthCallbackComponent } from './oauth-callback/oauth-callback.component';
 import { OAuthCallbackGuard } from 'app/oauth-callback.guard';
 import { LoginComponent } from './login/login.component';
-import { AdalConfigService } from 'app/aad/adal.config.service';
+import { AadConfigService } from 'app/aad/aad.config.service';
 import { EnsureAuthenticatedGuard } from 'app/ensure-authenticated.guard';
 const routeTracing = true;
 
@@ -76,7 +76,7 @@ export const routes: Route[] = [
     NgxDatatableModule,
     BrowserModule,
     FormsModule,
-    HttpModule,
+    HttpClientModule,
     TreeModule,
     ContextMenuModule,
     RouterModule.forRoot(routes, {  enableTracing: routeTracing, useHash: true })
@@ -86,8 +86,8 @@ export const routes: Route[] = [
     // { provide:APP_BASE_HREF,  useValue: location.pathname },
     MediaServiceFactory,
     AccountService,
-    AdalConfigService,
-    AdalService,
+    AadConfigService,
+    AadService,
     ArmService,
     OAuthCallbackGuard,
     EnsureAuthenticatedGuard

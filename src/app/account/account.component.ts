@@ -11,7 +11,7 @@ import { MediaAccount } from 'app/media/mediaaccount';
 export class AccountComponent {
 
   @Input()
-  account: MediaAccount;
+  account?: MediaAccount;
 
   constructor(private activatedRoute: ActivatedRoute) {
   }

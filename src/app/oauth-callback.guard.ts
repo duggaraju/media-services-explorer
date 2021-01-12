@@ -1,18 +1,18 @@
 import { Injectable } from '@angular/core';
 import { Router, CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
-import { AdalService } from './aad/adal.service';
+import { AadService } from './aad/aad.service';
 
 @Injectable()
 export class OAuthCallbackGuard implements CanActivate {
 
-    constructor(private router: Router, private adalService: AdalService) {}
+    constructor(private router: Router, private aadService: AadService) {}
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
 
-        this.adalService.handleWindowCallback();
-        const user = this.adalService.getCachedUser();
+        this.aadService.handleWindowCallback();
+        const user = this.aadService.getCachedUser();
         if (user) {
-            const returnUrl = route.queryParams['returnUrl'];
+            const returnUrl = route.queryParams.returnUrl;
 
             if (!returnUrl) {
                 this.router.navigate(['accounts']);

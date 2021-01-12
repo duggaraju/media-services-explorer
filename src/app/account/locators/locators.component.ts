@@ -5,7 +5,7 @@ import { Locator } from '../../media/locator';
 import { MediaServiceFactory } from '../../media/media.service.factory';
 import { AccountService } from '../../account.service';
 import { ContextMenuService } from 'ngx-contextmenu';
-import { AdalService } from 'app/aad/adal.service';
+import { AadService } from 'app/aad/aad.service';
 
 @Component({
   selector: 'app-locators',
@@ -31,8 +31,8 @@ export class LocatorsComponent extends EntityComponent<Locator> {
   constructor(
     activatedRoute: ActivatedRoute,
     mediaServiceFactory: MediaServiceFactory,
-    adalService: AdalService,
+    aadService: AadService,
     contextMenuService: ContextMenuService) {
-    super(activatedRoute, mediaServiceFactory, adalService, contextMenuService, 'Locators');
+    super(activatedRoute, mediaServiceFactory, aadService, contextMenuService, 'Locators');
   }
 }

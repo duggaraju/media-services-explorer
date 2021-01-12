@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
-import { Account, AcsAccountProperties } from './account';
+import { HttpClient } from '@angular/common/http';
+import { Account } from './account';
 import { AccountType } from './account.type';
 import { MediaAccount } from './media/mediaaccount';
 
@@ -8,9 +8,9 @@ import { MediaAccount } from './media/mediaaccount';
 @Injectable()
 export class AccountService {
 
-  private accounts: Account[];
+  private accounts: Account[] = [];
 
-  constructor(private http: Http) { }
+  constructor(private http: HttpClient) { }
 
   public getAccounts(): Account[] {
     if (!this.accounts) {
@@ -33,24 +33,14 @@ export class AccountService {
     let added = false;
     const actualAccount = this.accounts.find(element => element === account);
     if (actualAccount) {
-      console.log(`Updating account:${account.name} type:${AccountType[account.accountType]}`)
+      console.log(`Updating account:${account.name} type:${AccountType[account.accountType]}`);
     } else {
-      console.log(`Adding account:${name} type:${AccountType[account.accountType]}`)
+      console.log(`Adding account:${name} type:${AccountType[account.accountType]}`);
       this.accounts.push(account);
       added = true;
     }
     this.saveAccounts();
     return added;
-  }
-
-  public getMediaAccount(account: Account): MediaAccount {
-    switch (account.accountType) {
-        case AccountType.AcsAccount:
-        case AccountType.ArmAccount:
-            return null;
-        case AccountType.AadAccount:
-          throw new Error('Not yet supported!');
-    }
   }
 
   private loadAccounts(): void {

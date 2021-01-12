@@ -1,18 +1,10 @@
 
 import { Injectable } from '@angular/core';
-import { TokenProvider } from '../token.provider';
-import { Http, Headers, RequestOptions, RequestMethod, Request, Response, URLSearchParams } from '@angular/http';
+import { HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
 import { MediaAccount } from './mediaaccount';
-import { Asset } from './asset';
 import { Channel } from './channel';
-import { Job } from './job';
-import { ContentKey } from './contentkey';
-import { Locator } from './locator';
-import { AccessPolicy } from './accesspolicy';
-import { DeliveryPolicy } from './deliverypolicy';
-import { StreamingEndpoint } from './streamingendpoint';
 import { Observable, of } from 'rxjs';
-import { flatMap, map } from 'rxjs/operators';
+import { mergeMap, map } from 'rxjs/operators';
 import { MediaQuery } from './mediaquery';
 import { QueryResult } from './queryresult';
 import { MediaEntity } from './media.entity';
@@ -22,32 +14,31 @@ import { MediaEntityService } from './media.entity.service';
 export class MediaService {
     public static readonly defaultVersion: string = '2.14';
 
-    private defaultHeaders: Headers;
-    private apiUrl: string;
+    private defaultHeaders: Map<string, string>;
+    private apiUrl?: string;
 
 
-    constructor(private http: Http, private account: MediaAccount) {
-        this.defaultHeaders = new Headers( {
-            'Accept': 'application/json',
-            'x-ms-version': account.apiVersion || MediaService.defaultVersion
-        });
+    constructor(private http: HttpClient, private account: MediaAccount) {
+        this.defaultHeaders = new Map([
+            [ 'Accept', 'application/json' ],
+            [ 'x-ms-version', account.apiVersion || MediaService.defaultVersion]
+        ]);
     }
 
-    private getRequestOptions(headers: Headers): RequestOptions {
-        const options = new RequestOptions( { headers: this.defaultHeaders });
-        headers.forEach( (values: string[], name) => options.headers.set(name, values));
-        return options;
+    private getRequestOptions(headers: HttpHeaders): HttpHeaders {
+        this.defaultHeaders.forEach((value, name) => headers.set(name, value));
+        return headers;
     }
+
 
     public getApiUrl(): Observable<string> {
         if (!this.apiUrl) {
             console.log(`Checking ${this.account.apiUrl} to see if redirection is needed `);
             return this.account.tokenProvider.getAuthorizationHeaders().pipe(
-                flatMap((headers: Headers) => this.http.get(this.account.apiUrl, this.getRequestOptions(headers))),
-                map( (response: Response) =>  {
-                    const  metadata = response.json();
-                    this.apiUrl = metadata['odata.metadata'].replace(/\/\$metadata$/, '');
-                    return this.apiUrl;
+                mergeMap((headers: HttpHeaders) => this.http.get<any>(this.account.apiUrl, { headers: this.getRequestOptions(headers) })),
+                map(json  =>  {
+                    this.apiUrl = json['odata.metadata'].replace(/\/\$metadata$/, '');
+                    return this.apiUrl as string;
                 }));
         }
         return of(this.apiUrl);
@@ -58,9 +49,10 @@ export class MediaService {
      */
     getMetadata(): Observable<any> {
         return this.getApiUrl().pipe(
-            flatMap(url => this.account.tokenProvider.getAuthorizationHeaders()),
-            flatMap(headers =>  this.http.get(`${this.apiUrl}/$metadata`, this.getRequestOptions(headers))),
-            map(response => response.json()));
+            mergeMap(() => this.account.tokenProvider.getAuthorizationHeaders()),
+            mergeMap(headers =>  this.http.get<any>(`${this.apiUrl}/$metadata`, {
+                headers: this.getRequestOptions(headers)
+            })));
     }
 
     /**
@@ -69,33 +61,32 @@ export class MediaService {
     getEntities<T>(entityName: string, query?: MediaQuery): Observable<QueryResult<T>> {
         let entityUrl: string;
         return this.getApiUrl().pipe(
-            flatMap(url => {
+            mergeMap(url => {
                 entityUrl = `${url}/${entityName}`;
-                return this.account.tokenProvider.getAuthorizationHeaders()
+                return this.account.tokenProvider.getAuthorizationHeaders();
             }),
-            flatMap(headers =>  {
-                const options = this.getRequestOptions(headers);
-                if (query) {
-                    options.search = this.buildSearch(query);
-                }
+            mergeMap(headers => {
+                const options = {
+                    headers: this.getRequestOptions(headers),
+                    params: query ? this.buildSearch(query) : undefined
+                };
                 console.log(`querying ${entityUrl}`);
-                return this.http.get(entityUrl, options);
+                return this.http.get<any>(entityUrl, options);
             }),
-            map(response => {
-                const json = response.json();
-                return <QueryResult<T>> {
+            map(json => {
+                return {
                     count: parseInt(json['odata.count'], 10),
                     value: json.value
-                };
+                } as QueryResult<T>;
             }));
     }
 
-    private buildSearch(query: MediaQuery): URLSearchParams {
-        const params = new URLSearchParams();
-        params.set('$inlinecount', 'allpages');
-        params.set('$top', query.top.toString());
-        params.set('$skip', query.skip.toString());
-        params.set('$filter', query.query.toString());
+    private buildSearch(query: MediaQuery): HttpParams {
+        const params = new HttpParams()
+            .set('$inlinecount', 'allpages')
+            .set('$top', query.top.toString())
+            .set('$skip', query.skip.toString())
+            .set('$filter', query.query.toString());
         return params;
     }
 

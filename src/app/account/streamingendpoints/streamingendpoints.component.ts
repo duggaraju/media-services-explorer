@@ -5,7 +5,7 @@ import { StreamingEndpoint } from '../../media/streamingendpoint';
 import { EntityComponent } from '../entity.component';
 import { AccountService } from '../../account.service';
 import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
-import { AdalService } from 'app/aad/adal.service';
+import { AadService } from 'app/aad/aad.service';
 
 @Component({
   selector: 'app-streamingendpoints',
@@ -15,7 +15,7 @@ import { AdalService } from 'app/aad/adal.service';
 export class StreamingendpointsComponent extends EntityComponent<StreamingEndpoint> {
 
   @ViewChild('originMenu')
-  contextMenu: ContextMenuComponent;
+  contextMenu?: ContextMenuComponent;
 
   columns = [
     {
@@ -29,14 +29,14 @@ export class StreamingendpointsComponent extends EntityComponent<StreamingEndpoi
     }, {
       prop: 'CdnEnabled'
     }
-  ]
+  ];
 
   constructor(
     activatedRoute: ActivatedRoute,
     mediaServiceFactory: MediaServiceFactory,
-    adalService: AdalService,
+    aadService: AadService,
     contextMenuService: ContextMenuService) {
-    super(activatedRoute, mediaServiceFactory, adalService, contextMenuService, 'StreamingEndpoints');
+    super(activatedRoute, mediaServiceFactory, aadService, contextMenuService, 'StreamingEndpoints');
   }
 
    private isStarted(item: StreamingEndpoint): boolean {

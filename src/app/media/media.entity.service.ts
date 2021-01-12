@@ -1,10 +1,9 @@
 
 import { Injectable } from '@angular/core';
-import { TokenProvider } from '../token.provider';
-import { Http, Headers, RequestOptions, RequestMethod, Request, Response, URLSearchParams } from '@angular/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { MediaAccount } from './mediaaccount';
 import { Observable } from 'rxjs';
-import { map, flatMap } from 'rxjs/operators';
+import { map, mergeMap } from 'rxjs/operators';
 import { MediaQuery } from './mediaquery';
 import { QueryResult } from './queryresult';
 import { MediaEntity } from './media.entity';
@@ -12,19 +11,18 @@ import { MediaService } from './media.service';
 
 @Injectable()
 export class MediaEntityService<T extends MediaEntity> {
-    private defaultHeaders: Headers;
+    private defaultHeaders: Map<string, string>;
 
-    constructor(private http: Http, private account: MediaAccount, private apiUrl: string, private entityName: string) {
-        this.defaultHeaders = new Headers( {
-            'Accept': 'application/json',
-            'x-ms-version': account.apiVersion || MediaService.defaultVersion
-        });
+    constructor(private http: HttpClient, private account: MediaAccount, private apiUrl: string, private entityName: string) {
+        this.defaultHeaders = new Map( [
+            [ 'Accept', 'application/json' ],
+            [ 'x-ms-version', account.apiVersion || MediaService.defaultVersion ]
+        ]);
     }
 
-    private getRequestOptions(headers: Headers): RequestOptions {
-        const options = new RequestOptions( { headers: this.defaultHeaders });
-        headers.forEach( (values: string[], name) => options.headers.set(name, values));
-        return options;
+    private getRequestHeaders(headers: HttpHeaders): HttpHeaders {
+        this.defaultHeaders.forEach( (value, name) => headers.set(name, value));
+        return headers;
     }
 
     /**
@@ -33,32 +31,33 @@ export class MediaEntityService<T extends MediaEntity> {
     query(query?: MediaQuery): Observable<QueryResult<T>> {
         const entityUrl = `${this.apiUrl}/${this.entityName}`;
         return this.account.tokenProvider.getAuthorizationHeaders().pipe(
-            flatMap(headers =>  {
-                const options = this.getRequestOptions(headers);
-                if (query) {
-                    options.search = this.buildSearch(query);
-                }
+            mergeMap(headers =>  {
+                const options = {
+                    headers: this.getRequestHeaders(headers),
+                    params: query ? this.buildSearch(query) : undefined
+                };
                 console.log(`querying ${entityUrl}`);
-                return this.http.get(entityUrl, options);
+                return this.http.get<any>(entityUrl, options);
             }),
-            map(response => {
-                const json = response.json();
-                return <QueryResult<T>> {
+            map(json => {
+                return {
                     count: parseInt(json['odata.count'], 10),
                     value: json.value
-                };
+                } as QueryResult<T>;
             }));
     }
 
     create(entity: T): Observable<boolean> {
         const entityUrl = `${this.apiUrl}/${this.entityName}`;
         return this.account.tokenProvider.getAuthorizationHeaders().pipe(
-            flatMap(headers =>  {
-                const options = this.getRequestOptions(headers);
+            mergeMap(headers =>  {
+                const options = {
+                    headers: this.getRequestHeaders(headers)
+                };
                 console.log(`querying ${entityUrl}`);
                 return this.http.post(entityUrl, entity, options);
             }),
-            map(response => {
+            map(() => {
                 return true;
             }));
     }
@@ -66,12 +65,14 @@ export class MediaEntityService<T extends MediaEntity> {
     delete(entity: T): Observable<boolean> {
         const entityUrl = `${this.apiUrl}/${this.entityName}(${entity.Id})`;
         return this.account.tokenProvider.getAuthorizationHeaders().pipe(
-            flatMap(headers =>  {
-                const options = this.getRequestOptions(headers);
+            mergeMap(headers =>  {
+                const options = {
+                    headers: this.getRequestHeaders(headers)
+                };
                 console.log(`querying ${entityUrl}`);
                 return this.http.delete(entityUrl, options);
             }),
-            map(response => {
+            map(() => {
                 return true;
             }));
     }
@@ -79,12 +80,12 @@ export class MediaEntityService<T extends MediaEntity> {
     update(entity: T): Observable<boolean> {
         const entityUrl = `${this.apiUrl}/${this.entityName}(${entity.Id})`;
         return this.account.tokenProvider.getAuthorizationHeaders().pipe(
-            flatMap(headers =>  {
-                const options = this.getRequestOptions(headers);
+            mergeMap(headers =>  {
+                const options = this.getRequestHeaders(headers);
                 console.log(`querying ${entityUrl}`);
                 return this.http.put(entityUrl, options);
             }),
-            map(response => {
+            map(() => {
                 return true;
             }));
     }
@@ -92,22 +93,21 @@ export class MediaEntityService<T extends MediaEntity> {
     executeOperation(entity: T, operation: string, operationParams?: any): Observable<any> {
         const entityUrl = `${this.apiUrl}/${this.entityName}(${entity.Id})/${operation}`;
         return this.account.tokenProvider.getAuthorizationHeaders().pipe(
-            flatMap(headers =>  {
-                const options = this.getRequestOptions(headers);
+            mergeMap(headers =>  {
+                const options = {
+                    headers: this.getRequestHeaders(headers)
+                };
                 console.log(`querying ${entityUrl}`);
-                return this.http.post(entityUrl, operationParams, options);
-            }),
-            map(response => {
-                return response.json();
+                return this.http.post<any>(entityUrl, operationParams, options);
             }));
     }
 
-    private buildSearch(query: MediaQuery): URLSearchParams {
-        const params = new URLSearchParams();
-        params.set('$inlinecount', 'allpages');
-        params.set('$top', query.top.toString());
-        params.set('$skip', query.skip.toString());
-        params.set('$filter', query.query.toString());
+    private buildSearch(query: MediaQuery): HttpParams {
+        const params = new HttpParams()
+            .set('$inlinecount', 'allpages')
+            .set('$top', query.top.toString())
+            .set('$skip', query.skip.toString())
+            .set('$filter', query.query.toString());
         return params;
     }
 }
