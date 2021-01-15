@@ -1,0 +1,33 @@
+<div class="container-fluid" >
+  <ngx-datatable 
+    [rows]="rows"
+    [columns]="columns"
+    [columnMode]="'force'"
+    [limit]="pageSize"
+    [count]="count"
+    [externalPaging]="true"
+    [headerHeight]="'auto'"
+    [footerHeight]="'auto'"
+    [offset]="offset"
+    (page)="onPage($event)"
+    (rowContextmenu)="onContextMenu($event)"
+    class="material striped" >
+  </ngx-datatable>
+  <context-menu [useBootstrap4]="true" #assetMenu>
+    <ng-template let-item contextMenuItem (execute)="playAsset($event.item)">Play</ng-template>
+    <ng-template let-item contextMenuItem (execute)="publishAsset($event.item)">Publish</ng-template>
+    <ng-template let-item contextMenuItem (execute)="deleteEntity($event.item)">Delete</ng-template>
+  </context-menu>
+  <context-menu [useBootstrap4]="true" #channelMenu>
+    <ng-template let-item contextMenuItem [visible]="isStopped" (execute)="startChannel($event.item)">Start</ng-template>
+    <ng-template let-item contextMenuItem [visible]="isStarted" (execute)="stopChannel($event.item)">Stop</ng-template>
+    <ng-template let-item contextMenuItem [visible]="isStarted" (execute)="resetChannel($event.item)">Reset</ng-template>
+    <ng-template let-item contextMenuItem [enabled]="isStopped" (execute)="deleteEntity($event.item)">Delete</ng-template>
+  </context-menu>
+  <context-menu [useBootstrap4]="true" #originMenu>
+    <ng-template let-item contextMenuItem [visible]="isStopped"  (execute)="startOrigin($event.item)">Start</ng-template>
+    <ng-template let-item contextMenuItem [visible]="isStarted" (execute)="stopOrigin($event.item)">Stop</ng-template>
+    <ng-template let-item contextMenuItem (execute)="scaleOrigin($event.item)">Scale</ng-template>
+    <ng-template let-item contextMenuItem [enabled]="isStopped" (execute)="deleteEntity($event.item)">Delete</ng-template>
+  </context-menu>
+</div>

@@ -1,0 +1,13 @@
+.container-flud {
+    height: 100%;
+}
+
+.row {
+    height: 100%;
+}
+
+.accounts{
+    height: 100vh;
+    overflow-x: auto;
+    overflow-y: hidden;
+}
