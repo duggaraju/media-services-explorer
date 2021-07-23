@@ -9,6 +9,7 @@ export const environment = {
   aadTenant: 'common',
   aadClientId: '2df1b6c9-1406-40f9-a730-b5d0462c651c',
   graphResource: 'https://graph.microsoft.com',
+  redirectUri: 'http://localhost:4200',
   aadLogging: true,
   aadLogLevel: 3,
   // this is not working with electron.

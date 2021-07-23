@@ -7,13 +7,11 @@ import { AzureAccountNode } from './azure.account.node';
 import { MediaAccountNode } from './media.account.node';
 import { ArmService } from '../arm/arm.service';
 import { ITreeOptions, TreeNode, TreeComponent, IActionMapping } from '@circlon/angular-tree-component';
-import { Observable } from 'rxjs';
 import { Node } from './node';
 import { AccountNode } from './account.node';
-import { RootNode } from './root.node';
 import { NodeType } from './node.type';
-import { AadService } from '../aad/aad.service';
 import { AccountService } from '../account.service';
+import { MsalService } from '@azure/msal-angular';
 
 @Component({
   selector: 'app-accounts',
@@ -40,23 +38,15 @@ export class AccountsComponent implements AfterViewInit {
     } as IActionMapping
   };
 
-  constructor(private activatedRoute: ActivatedRoute,
-              private aadService: AadService,
+  constructor(private authService: MsalService,
               private armService: ArmService,
               private accountService: AccountService) {
-    this.activatedRoute.fragment.subscribe(this.handleWindowCallback.bind(this));
     this.loadAccounts();
   }
 
-  private handleWindowCallback(fragment: string): void {
-    if (fragment) {
-      console.log('Fragment is ' + fragment);
-      this.aadService.handleWindowCallback(fragment);
-    }
-  }
   private loadAccounts(): void {
-    const user = this.aadService.getCachedUser();
-    const root = new AzureAccountNode(user.userName, this.aadService, this.armService);
+    const account = this.authService.instance.getActiveAccount();
+    const root = new AzureAccountNode(account?.username || '', this.armService);
     this.nodes.push(root);
   }
 
@@ -72,10 +62,10 @@ export class AccountsComponent implements AfterViewInit {
     if (added) {
       const nodeType: number = account.accountType;
       const node = account.accountType === AccountType.ArmAccount ?
-        new AzureAccountNode(account.name, this.aadService, this.armService) :
+        new AzureAccountNode(account.name, this.armService) :
         new MediaAccountNode(account);
       console.log(`Creating a new node name:${node.name} of type:${NodeType[nodeType]}`);
-      this.nodes[nodeType].children.push(node);
+      this.nodes[nodeType].children?.push(node);
       this.tree?.treeModel.update();
       this.newAccount = false;
     }
@@ -85,11 +75,13 @@ export class AccountsComponent implements AfterViewInit {
     console.log(`Deleting account name:${account.name} of type:${AccountType[account.accountType]}`);
     this.accountService.deleteAccount(account);
     const nodes = this.nodes[account.accountType].children;
-    const index = nodes.findIndex(node => node.name === account.name);
-    if (index !== -1) {
-      console.log(`removing node from the tree...`);
-      nodes.splice(index, 1);
-      this.tree?.treeModel.update();
+    if (nodes) {
+      const index = nodes.findIndex(node => node.name === account.name);
+      if (index !== -1) {
+        console.log(`removing node from the tree...`);
+        nodes.splice(index, 1);
+        this.tree?.treeModel.update();
+      }
     }
     this.selectedAccount = undefined;
   }

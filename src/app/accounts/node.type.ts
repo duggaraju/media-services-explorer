@@ -1,8 +1,7 @@
 export enum NodeType {
-    AcsAccount = 0,
+    ArmAccount = 0,
     AadAccount = 1,
-    ArmAccount = 2,
-    Root = 3,
-    AzureAccount = 4,
-    Subscription = 5
+    Root = 2,
+    AzureAccount = 3,
+    Subscription = 4
 }

@@ -3,9 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { MediaServiceFactory } from '../../media/media.service.factory';
 import { StreamingEndpoint } from '../../media/streamingendpoint';
 import { EntityComponent } from '../entity.component';
-import { AccountService } from '../../account.service';
 import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
-import { AadService } from 'app/aad/aad.service';
 
 @Component({
   selector: 'app-streamingendpoints',
@@ -34,9 +32,8 @@ export class StreamingendpointsComponent extends EntityComponent<StreamingEndpoi
   constructor(
     activatedRoute: ActivatedRoute,
     mediaServiceFactory: MediaServiceFactory,
-    aadService: AadService,
     contextMenuService: ContextMenuService) {
-    super(activatedRoute, mediaServiceFactory, aadService, contextMenuService, 'StreamingEndpoints');
+    super(activatedRoute, mediaServiceFactory, contextMenuService, 'StreamingEndpoints');
   }
 
    private isStarted(item: StreamingEndpoint): boolean {

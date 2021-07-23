@@ -1,5 +1,4 @@
 export enum AccountType {
-    AcsAccount  = 0,
-    AadAccount = 1,
-    ArmAccount = 2
+    ArmAccount = 0,
+    AadAccount = 1
 }

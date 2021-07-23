@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AadService } from '../aad/aad.service'
+import { MsalService} from '@azure/msal-angular';
 
 @Component({
   selector: 'app-login',
@@ -8,10 +8,10 @@ import { AadService } from '../aad/aad.service'
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private aadService: AadService) { }
+  constructor(private aadService: MsalService) { }
 
-  ngOnInit() {
-    this.aadService.login();
+  ngOnInit(): void {
+    this.aadService.loginRedirect();
   }
 
 }

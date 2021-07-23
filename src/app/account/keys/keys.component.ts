@@ -3,9 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { EntityComponent } from '../entity.component';
 import { ContentKey } from '../../media/contentkey';
 import { MediaServiceFactory } from '../../media/media.service.factory';
-import { AccountService } from '../../account.service';
 import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
-import { AadService } from 'app/aad/aad.service';
 
 @Component({
   selector: 'app-keys',
@@ -30,8 +28,7 @@ export class KeysComponent extends EntityComponent<ContentKey> {
   constructor(
     activatedRoute: ActivatedRoute,
     mediaServiceFactory: MediaServiceFactory,
-    aadService: AadService,
     contextMenuService: ContextMenuService) {
-    super(activatedRoute, mediaServiceFactory, aadService, contextMenuService, 'ContentKeys');
+    super(activatedRoute, mediaServiceFactory, contextMenuService, 'ContentKeys');
   }
 }

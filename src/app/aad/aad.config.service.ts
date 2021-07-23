@@ -1,17 +1,10 @@
-/// <reference types="adal" />
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
-import { Configuration, AuthenticationParameters } from 'msal';
+import { Configuration } from '@azure/msal-browser';
 
 @Injectable()
 export class AadConfigService {
     constructor() {
-        if (environment.aadLogging) {
-            const logging = {
-                log: (message: string) => console.log(message),
-                level: environment.aadLogLevel
-            };
-        }
     }
 
     public getConfig(): Configuration {
@@ -21,15 +14,5 @@ export class AadConfigService {
             }
         };
         return config;
-    }
-
-    public getConfigForDomain(domain: string): Configuration {
-        return this.getConfig();
-    }
-
-    public getAuthenticationParameters(resource: string): AuthenticationParameters {
-        return {
-            scopes: [ resource ]
-        };
     }
 }

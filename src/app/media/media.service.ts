@@ -25,17 +25,15 @@ export class MediaService {
         ]);
     }
 
-    private getRequestOptions(headers: HttpHeaders): HttpHeaders {
-        this.defaultHeaders.forEach((value, name) => headers.set(name, value));
-        return headers;
+    private getRequestOptions(): HttpHeaders {
+        return new HttpHeaders();
     }
 
 
     public getApiUrl(): Observable<string> {
         if (!this.apiUrl) {
             console.log(`Checking ${this.account.apiUrl} to see if redirection is needed `);
-            return this.account.tokenProvider.getAuthorizationHeaders().pipe(
-                mergeMap((headers: HttpHeaders) => this.http.get<any>(this.account.apiUrl, { headers: this.getRequestOptions(headers) })),
+            return this.http.get<any>(this.account.apiUrl, { headers: this.getRequestOptions() }).pipe(
                 map(json  =>  {
                     this.apiUrl = json['odata.metadata'].replace(/\/\$metadata$/, '');
                     return this.apiUrl as string;
@@ -49,9 +47,8 @@ export class MediaService {
      */
     getMetadata(): Observable<any> {
         return this.getApiUrl().pipe(
-            mergeMap(() => this.account.tokenProvider.getAuthorizationHeaders()),
-            mergeMap(headers =>  this.http.get<any>(`${this.apiUrl}/$metadata`, {
-                headers: this.getRequestOptions(headers)
+            mergeMap(url =>  this.http.get<any>(`${url}/$metadata`, {
+                headers: this.getRequestOptions()
             })));
     }
 
@@ -59,15 +56,10 @@ export class MediaService {
      * Queries entities
      */
     getEntities<T>(entityName: string, query?: MediaQuery): Observable<QueryResult<T>> {
-        let entityUrl: string;
         return this.getApiUrl().pipe(
-            mergeMap(url => {
-                entityUrl = `${url}/${entityName}`;
-                return this.account.tokenProvider.getAuthorizationHeaders();
-            }),
-            mergeMap(headers => {
+            mergeMap(entityUrl => {
                 const options = {
-                    headers: this.getRequestOptions(headers),
+                    headers: this.getRequestOptions(),
                     params: query ? this.buildSearch(query) : undefined
                 };
                 console.log(`querying ${entityUrl}`);
