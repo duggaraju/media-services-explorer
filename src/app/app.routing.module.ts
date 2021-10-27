@@ -10,6 +10,7 @@ import { LocatorsComponent } from './account/locators/locators.component';
 import { KeysComponent } from './account/keys/keys.component';
 import { AccessPoliciesComponent } from './account/access-policies/access-policies.component';
 import { DeliveryPoliciesComponent } from './account/delivery-policies/delivery-policies.component';
+import { LoginComponent } from './login/login.component';
 
 const routes: Route[] = [
     {
@@ -27,6 +28,15 @@ const routes: Route[] = [
         { path: 'deliverypolicies', component: DeliveryPoliciesComponent },
         { path: 'keys', component: KeysComponent }
       ]
+    },
+    {
+      // Needed for hash routing
+      path: 'code',
+      component: AccountsComponent
+    },
+    {
+      path: 'login-failed',
+      component: LoginComponent
     },
     {
       path: '',

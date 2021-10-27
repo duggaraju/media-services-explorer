@@ -5,7 +5,7 @@ import { Account } from '../account';
 import { ArmService } from '../arm/arm.service';
 import { AzureSubscriptionNode } from './azure.subscription.node';
 import { NodeType } from './node.type';
-import { Subscription } from '../arm/subscription';
+import { Subscription } from '@azure/arm-subscriptions/esm/models';
 
 export class AzureAccountNode extends Node {
 

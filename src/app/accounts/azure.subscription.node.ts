@@ -4,13 +4,14 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ArmService } from '../arm/arm.service';
 import { NodeType } from './node.type';
-import { Subscription } from '../arm/subscription';
+import { Subscription } from '@azure/arm-subscriptions/esm/models';
+
 import { MediaAccountInfo } from '../arm/media.account.info';
 
 export class AzureSubscriptionNode extends Node {
 
     constructor(private subscritpion: Subscription, private armService: ArmService) {
-        super(subscritpion.displayName, NodeType.Subscription);
+        super(subscritpion.displayName ?? '', NodeType.Subscription);
     }
 
     public loadChildren(): Promise<AzureMediaAccountNode[]> {
@@ -21,6 +22,6 @@ export class AzureSubscriptionNode extends Node {
 
     private loadMediaAccounts(): Observable<MediaAccountInfo[]> {
         console.log('loading media accounts...');
-        return this.armService.getMediaAccounts(this.subscritpion.id);
+        return this.armService.getMediaAccounts(this.subscritpion);
     }
 }

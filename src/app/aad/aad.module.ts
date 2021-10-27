@@ -3,23 +3,35 @@ import { NgModule } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { MsalBroadcastService, MsalGuard, MsalGuardConfiguration, MsalInterceptorConfiguration, MsalModule,
   MsalService, MSAL_GUARD_CONFIG, MSAL_INSTANCE, MSAL_INTERCEPTOR_CONFIG } from '@azure/msal-angular';
-import { BrowserCacheLocation, InteractionType, IPublicClientApplication, PublicClientApplication } from '@azure/msal-browser';
+import { BrowserCacheLocation, InteractionType, IPublicClientApplication, PublicClientApplication, LogLevel } from '@azure/msal-browser';
 
 const isIE = window.navigator.userAgent.indexOf('MSIE ') > -1 ||
   window.navigator.userAgent.indexOf('Trident/') > -1; // Remove this line to use Angular Universal
 
+export function loggerCallback(logLevel: LogLevel, message: string) {
+  console.log(message);
+}
+  
 export function MSALInstanceFactory(): IPublicClientApplication {
   return new PublicClientApplication({
     auth: {
       clientId: environment.aadClientId,
       authority: `${environment.aadAuthority}${environment.aadTenant}`,
-      redirectUri: environment.redirectUri,
-      postLogoutRedirectUri: environment.redirectUri
+      redirectUri: '/',
+      postLogoutRedirectUri: '/'
     },
     cache: {
       cacheLocation: BrowserCacheLocation.LocalStorage,
       storeAuthStateInCookie: isIE, // set to true for IE 11. Remove this line to use Angular Universal
     },
+    system: {
+      allowRedirectInIframe: true,
+      loggerOptions: {
+        loggerCallback,
+        logLevel: LogLevel.Trace,
+        piiLoggingEnabled: false
+      }
+    }
   });
 }
 
