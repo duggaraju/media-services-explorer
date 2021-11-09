@@ -14,11 +14,10 @@ import { LoginComponent } from './login/login.component';
 
 const routes: Route[] = [
     {
-      path: 'accounts',
+      path: '',
       component: AccountsComponent,
       canActivate: [ MsalGuard ],
       children: [
-        { path: '', redirectTo: 'accounts', pathMatch: 'full' },
         { path: 'assets', component: AssetsComponent },
         { path: 'channels', component: ChannelsComponent },
         { path: 'origins', component: StreamingendpointsComponent },
@@ -30,18 +29,12 @@ const routes: Route[] = [
       ]
     },
     {
-      // Needed for hash routing
-      path: 'code',
-      component: AccountsComponent
-    },
-    {
       path: 'login-failed',
       component: LoginComponent
     },
     {
-      path: '',
-      component: AccountsComponent,
-      canActivate: [ MsalGuard ]
+      path: '**',
+      redirectTo: '',
     }
 ];
 

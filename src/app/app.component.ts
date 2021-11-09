@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, OnDestroy } from '@angular/core';
 import { MsalService, MsalBroadcastService, MSAL_GUARD_CONFIG, MsalGuardConfiguration } from '@azure/msal-angular';
-import { AuthenticationResult, EventType, InteractionStatus, InteractionType, PopupRequest, RedirectRequest } from '@azure/msal-browser';
+import { AuthenticationResult, EventMessage, EventType, InteractionStatus, InteractionType, PopupRequest, RedirectRequest } from '@azure/msal-browser';
 import { Subject } from 'rxjs';
 import { filter, takeUntil } from 'rxjs/operators';
 
@@ -25,22 +25,38 @@ export class AppComponent implements OnInit, OnDestroy {
     this.isIframe = window !== window.parent && !window.opener; // Remove this line to use Angular Universal
 
     this.checkAccount();
+    this.authService.instance.enableAccountStorageEvents();
+    this.msalBroadcastService.msalSubject$
+    .pipe(
+      filter((msg: EventMessage) => {
+        console.log('message is', msg);
+        return msg.eventType === EventType.ACCOUNT_ADDED || msg.eventType === EventType.ACCOUNT_REMOVED;
+      } ),
+      takeUntil(this._destroying$)
+    )
+    .subscribe((result) => {
+      if (this.authService.instance.getAllAccounts().length === 0) {
+        window.location.pathname = '/';
+      } else {
+        this.checkAccount();
+      }        
+    });
 
     this.msalBroadcastService.inProgress$
-      .pipe(
-        filter((status: InteractionStatus) => {
-          console.log(`Event is ${status}`);
-          return status === InteractionStatus.None;
-        } ),
-        takeUntil(this._destroying$)
-      )
-      .subscribe((result) => {
+    .pipe(
+      filter((status:InteractionStatus) => {
+        console.warn('Interaction status', status)
+        return status === InteractionStatus.None;
+      }),
+       takeUntil(this._destroying$)
+      ).subscribe((result) => {
+        console.log('Result is', result);
         this.checkAccount();
         this.checkAndSetActiveAccount();
       });
   }
 
-  checkAccount(): void {
+  checkAccount() {
     this.loggedIn = this.authService.instance.getAllAccounts().length > 0;
   }
 

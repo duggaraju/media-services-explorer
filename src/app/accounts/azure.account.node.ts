@@ -14,11 +14,11 @@ export class AzureAccountNode extends Node {
     }
 
     public loadChildren(): Promise<Node[]> {
-        return this.loadSubscriptions().pipe(
+        return this.loadSubscriptions().pipe<Node[]>(
             map(subscriptions => subscriptions.map((s, i) => {
                 const node = new AzureSubscriptionNode(s, this.armService);
                 return node;
-            }))).toPromise();
+            }))).toPromise<Node[]>();
     }
 
     private loadSubscriptions(): Observable<Subscription[]> {

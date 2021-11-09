@@ -37,7 +37,7 @@ export function MSALInstanceFactory(): IPublicClientApplication {
 
 export function MSALInterceptorConfigFactory(): MsalInterceptorConfiguration {
   const protectedResourceMap = new Map<string, Array<string>>();
-  protectedResourceMap.set('https://management.azure.com', ['https://management.azure.com/.default']);
+  protectedResourceMap.set('https://management.azure.com/', ['https://management.azure.com//.default']);
 
   return {
     interactionType: InteractionType.Redirect,

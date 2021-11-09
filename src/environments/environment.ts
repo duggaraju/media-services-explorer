@@ -7,7 +7,7 @@ export const environment = {
   production: false,
   aadAuthority: 'https://login.microsoftonline.com/',
   aadTenant: 'common',
-  aadClientId: '8797802a-c6d8-4cf2-9be6-268f12398247',
+  aadClientId: '2df1b6c9-1406-40f9-a730-b5d0462c651c',
   graphResource: 'https://graph.microsoft.com',
   redirectUri: 'http://localhost:4200',
   aadLogging: true,

@@ -19,7 +19,7 @@ import { DeliveryPoliciesComponent } from './account/delivery-policies/delivery-
 import { AccountService } from './account.service';
 import { TreeModule } from '@circlon/angular-tree-component';
 import { ArmService } from './arm/arm.service';
-import { MsalInterceptor } from '@azure/msal-angular';
+import { MsalInterceptor, MsalModule, MsalRedirectComponent } from '@azure/msal-angular';
 import { ContextMenuModule } from 'ngx-contextmenu';
 import { AadConfigService } from 'app/aad/aad.config.service';
 import { AppRoutingModule } from './app.routing.module';
@@ -61,6 +61,6 @@ import { AadModule } from './aad/aad.module';
     AadConfigService,
     ArmService
   ],
-  bootstrap: [ AppComponent ]
+  bootstrap: [ AppComponent, MsalRedirectComponent ]
 })
 export class AppModule { }

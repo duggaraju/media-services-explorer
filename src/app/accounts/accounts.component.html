@@ -7,9 +7,9 @@
           [options]="treeOptions"
           (activate)="onActivate($event.node)" >
           <ng-template #treeNodeTemplate let-node>
-              <span title="{{node.data.subTitle}}">{{ node.data.name }}</span>
-              <button *ngIf="!node.isRoot && !node.isLeaf" (click)="refresh($event, node)" ><i class="fa fa-refresh" aria-hidden="true"></i></button> 
-              <button *ngIf="node.isRoot" (click)="add($event, node)"><i class="fa fa-plus"></i></button>
+            <!--button *ngIf="!node.isRoot && !node.isLeaf" (click)="refresh($event, node)" ><i class="fa fa-refresh" aria-hidden="true"></i></button> 
+            <button *ngIf="node.isRoot" (click)="add($event, node)"><i class="fa fa-plus"></i></button-->
+            <span title="{{node.data.subTitle}}">{{ node.data.name }}</span>
           </ng-template>
           <ng-template #loadingTemplate>Loading, please wait....</ng-template>
       </tree-root>
