@@ -3,7 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { EntityComponent } from '../entity.component';
 import { AccessPolicy } from '../../media/accesspolicy';
 import { MediaServiceFactory } from '../../media/media.service.factory';
-import { ContextMenuService } from 'ngx-contextmenu';
 
 @Component({
   selector: 'app-locators',
@@ -29,8 +28,7 @@ export class AccessPoliciesComponent extends EntityComponent<AccessPolicy> {
 
   constructor(
     activatedRoute: ActivatedRoute,
-    mediaServiceFactory: MediaServiceFactory,
-    contextMenuService: ContextMenuService) {
-    super(activatedRoute, mediaServiceFactory, contextMenuService, 'AccessPolicies');
+    mediaServiceFactory: MediaServiceFactory) {
+    super(activatedRoute, mediaServiceFactory, 'AccessPolicies');
   }
 }

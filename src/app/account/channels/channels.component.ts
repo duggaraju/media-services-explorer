@@ -3,7 +3,6 @@ import { ActivatedRoute, Params } from '@angular/router';
 import { Channel } from '../../media/channel';
 import { MediaServiceFactory } from '../../media/media.service.factory';
 import { EntityComponent } from '../entity.component';
-import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
 
 @Component({
   selector: 'app-channels',
@@ -11,9 +10,6 @@ import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
   styleUrls: ['../entity.component.scss']
 })
 export class ChannelsComponent extends EntityComponent<Channel> {
-
-  @ViewChild('channelMenu')
-  contextMenu?: ContextMenuComponent;
 
   columns = [
     {
@@ -29,9 +25,8 @@ export class ChannelsComponent extends EntityComponent<Channel> {
 
     constructor(
       activatedRoute: ActivatedRoute,
-      mediaServiceFactory: MediaServiceFactory,
-      contextMenuService: ContextMenuService) {
-      super(activatedRoute, mediaServiceFactory, contextMenuService, 'Channels');
+      mediaServiceFactory: MediaServiceFactory) {
+      super(activatedRoute, mediaServiceFactory, 'Channels');
     }
 
    private isStarted(item: Channel): boolean {

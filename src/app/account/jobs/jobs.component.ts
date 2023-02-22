@@ -3,7 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { MediaServiceFactory } from '../../media/media.service.factory';
 import { Job } from '../../media/job';
 import { EntityComponent } from '../entity.component';
-import { ContextMenuService } from 'ngx-contextmenu';
 
 @Component({
   selector: 'app-jobs',
@@ -23,8 +22,7 @@ export class JobsComponent extends EntityComponent<Job> {
 
   constructor(
     activatedRoute: ActivatedRoute,
-    mediaServiceFactory: MediaServiceFactory,
-    contextMenuService: ContextMenuService) {
-    super(activatedRoute, mediaServiceFactory, contextMenuService, 'Jobs');
+    mediaServiceFactory: MediaServiceFactory) {
+    super(activatedRoute, mediaServiceFactory, 'Jobs');
    }
 }

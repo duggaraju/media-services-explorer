@@ -20,7 +20,6 @@ import { AccountService } from './account.service';
 import { TreeModule } from '@circlon/angular-tree-component';
 import { ArmService } from './arm/arm.service';
 import { MsalInterceptor, MsalModule, MsalRedirectComponent } from '@azure/msal-angular';
-import { ContextMenuModule } from 'ngx-contextmenu';
 import { AadConfigService } from 'app/aad/aad.config.service';
 import { AppRoutingModule } from './app.routing.module';
 import { AadModule } from './aad/aad.module';
@@ -47,7 +46,6 @@ import { AadModule } from './aad/aad.module';
     FormsModule,
     HttpClientModule,
     TreeModule,
-    ContextMenuModule,
     AadModule,
   ],
   providers: [

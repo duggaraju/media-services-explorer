@@ -3,6 +3,8 @@ import { TokenCredential, AccessToken } from '@azure/core-auth';
 import { InteractiveBrowserCredential} from '@azure/identity';
 import { AuthenticationResult, InteractionRequiredAuthError, IPublicClientApplication, SilentRequest } from '@azure/msal-browser';
 import { MsalService } from '@azure/msal-angular';
+import { environment } from '../../environments/environment';
+import { env } from 'process';
 
 class BrowserCredential implements TokenCredential {
   private hasAuthenticated: boolean = false;
@@ -80,6 +82,10 @@ export class AadConfigService {
     }
 
     public getCredentials(): TokenCredential {
-        return new InteractiveBrowserCredential();
+        //return new BrowserCredential(this.msalService.instance);
+        return new InteractiveBrowserCredential({
+          clientId: environment.aadClientId,
+          tenantId: environment.aadTenant
+        });
     }
 }

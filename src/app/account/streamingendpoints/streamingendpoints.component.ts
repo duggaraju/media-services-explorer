@@ -3,7 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { MediaServiceFactory } from '../../media/media.service.factory';
 import { StreamingEndpoint } from '../../media/streamingendpoint';
 import { EntityComponent } from '../entity.component';
-import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
 
 @Component({
   selector: 'app-streamingendpoints',
@@ -11,9 +10,6 @@ import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
   styleUrls: ['../entity.component.scss']
 })
 export class StreamingendpointsComponent extends EntityComponent<StreamingEndpoint> {
-
-  @ViewChild('originMenu')
-  contextMenu?: ContextMenuComponent;
 
   columns = [
     {
@@ -31,9 +27,8 @@ export class StreamingendpointsComponent extends EntityComponent<StreamingEndpoi
 
   constructor(
     activatedRoute: ActivatedRoute,
-    mediaServiceFactory: MediaServiceFactory,
-    contextMenuService: ContextMenuService) {
-    super(activatedRoute, mediaServiceFactory, contextMenuService, 'StreamingEndpoints');
+    mediaServiceFactory: MediaServiceFactory) {
+    super(activatedRoute, mediaServiceFactory, 'StreamingEndpoints');
   }
 
    private isStarted(item: StreamingEndpoint): boolean {

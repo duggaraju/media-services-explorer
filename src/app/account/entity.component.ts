@@ -5,7 +5,6 @@ import { MediaServiceFactory } from '../media/media.service.factory';
 import { MediaQuery } from '../media/mediaquery';
 import { MediaEntityService } from '../media/media.entity.service';
 import { MediaEntity } from '../media/media.entity';
-import { ContextMenuService, ContextMenuComponent } from 'ngx-contextmenu';
 
 export abstract class EntityComponent<T extends MediaEntity> implements OnInit {
 
@@ -16,13 +15,11 @@ export abstract class EntityComponent<T extends MediaEntity> implements OnInit {
   count = 0;
   pageSize = 50;
   private entities?: MediaEntityService<T>;
-  protected contextMenu?: ContextMenuComponent;
 
 
   constructor(
       private activatedRoute: ActivatedRoute,
       private mediaServiceFactory: MediaServiceFactory,
-      private contextMenuService: ContextMenuService,
       private entityName: string) {
   }
 
@@ -61,11 +58,6 @@ export abstract class EntityComponent<T extends MediaEntity> implements OnInit {
 
   private onContextMenu(contextMenuEvent: any): void {
     console.log(`context menu event ${contextMenuEvent.event.screenX}:${contextMenuEvent.event.screenY} for ${contextMenuEvent.row.Id}`);
-    this.contextMenuService.show.next({
-      event: contextMenuEvent.event,
-      item: contextMenuEvent.row,
-      contextMenu: this.contextMenu
-    });
     contextMenuEvent.event.preventDefault();
     contextMenuEvent.event.stopPropagation();
   }
