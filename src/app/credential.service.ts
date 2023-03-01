@@ -7,9 +7,10 @@ import { InteractiveBrowserCredential, InteractiveBrowserCredentialInBrowserOpti
 export class CredentialService {
 
   private _options: InteractiveBrowserCredentialInBrowserOptions = {
-    clientId: '',
-    tenantId: 'common',
-    
+    //clientId: 'd482072a-8945-4daf-add7-0ef022e7072e',
+    clientId: '2df1b6c9-1406-40f9-a730-b5d0462c651c',
+    tenantId: 'common', 
+    //loginStyle: 'redirect',
   };
 
   private _credential: TokenCredential;

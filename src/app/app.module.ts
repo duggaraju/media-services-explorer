@@ -6,6 +6,8 @@ import { HTTP_INTERCEPTORS, HttpClientModule } from "@angular/common/http"; // I
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatListModule } from '@angular/material/list';
+import { MatTreeModule } from '@angular/material/tree';
+import { MatIconModule } from '@angular/material/icon';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -14,6 +16,8 @@ import { ProfileComponent } from './profile/profile.component';
 
 import { MsalModule, MsalRedirectComponent, MsalGuard, MsalInterceptor } from '@azure/msal-angular'; // Import MsalInterceptor
 import { InteractionType, PublicClientApplication } from '@azure/msal-browser';
+import { setLogLevel } from '@azure/logger';
+setLogLevel('verbose');
 
 @NgModule({
   declarations: [
@@ -28,10 +32,12 @@ import { InteractionType, PublicClientApplication } from '@azure/msal-browser';
     MatButtonModule,
     MatToolbarModule,
     MatListModule,
+    MatTreeModule,
+    MatIconModule,
     HttpClientModule,
     MsalModule.forRoot( new PublicClientApplication({
       auth: {
-        clientId: 'd482072a-8945-4daf-add7-0ef022e7072e',
+        clientId: '2df1b6c9-1406-40f9-a730-b5d0462c651c',
         authority: 'https://login.microsoftonline.com/common',
         redirectUri: '/',
       },
@@ -48,7 +54,7 @@ import { InteractionType, PublicClientApplication } from '@azure/msal-browser';
       interactionType: InteractionType.Redirect, // MSAL Interceptor Configuration
       protectedResourceMap: new Map([ 
           ['https://graph.microsoft.com/v1.0/me', ['user.read']],
-          ['https://management.azure.com', ['.default']]
+          ['https://management.azure.com/', ['.default']]
       ])
     })
   ],
