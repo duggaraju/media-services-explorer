@@ -1,19 +1,29 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { HomeComponent } from './home/home.component';
-import { ProfileComponent } from './profile/profile.component';
+import { Route, RouterModule } from '@angular/router';
 import { MsalGuard } from '@azure/msal-angular';
+import { AccountsComponent } from './accounts/accounts.component';
+import { ChannelsComponent } from './account/channels/channels.component';
+import { AssetsComponent } from './account/assets/assets.component';
+import { TransformsComponent } from './account/transforms/transforms.component';
+import { StreamingendpointsComponent } from './account/streamingendpoints/streamingendpoints.component';
 
-const routes: Routes = [
-  {
-    path: 'profile',
-    component: ProfileComponent,
-    canActivate: [MsalGuard]
-  },
+
+const routes: Route[] = [
   {
     path: '',
-    component: HomeComponent
+    component: AccountsComponent,
+    canActivate: [ MsalGuard ],
+    children: [
+      { path: 'assets', component: AssetsComponent },
+      { path: 'channels', component: ChannelsComponent },
+      { path: 'streamingendpoints', component: StreamingendpointsComponent },
+      { path: 'transforms', component: TransformsComponent },
+    ]
   },
+  {
+    path: '**',
+    redirectTo: '',
+  }
 ];
 
 const isIframe = window !== window.parent && !window.opener;

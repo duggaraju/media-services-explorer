@@ -1,0 +1,12 @@
+<header>Account: {{account?.name}}</header>
+<div *ngIf="account" >
+  <nav mat-tab-nav-bar [tabPanel]="tabPanel" [mat-stretch-tabs]="false" >
+    <a mat-tab-link *ngFor="let link of links; index as i" [routerLink]="[link.link, {id: account.id}]"
+      (click)="selectedIndex = i" [active]="i === selectedIndex" >
+      {{link.name}}
+    </a>
+  </nav>
+  <mat-tab-nav-panel #tabPanel>
+    <router-outlet></router-outlet>
+  </mat-tab-nav-panel>
+<div>

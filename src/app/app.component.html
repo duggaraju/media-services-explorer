@@ -1,15 +1,10 @@
 <mat-toolbar color="primary">
+  <button mat-icon-button class="toogle-sidenav" aria-label="Toggle side navigation">
+    <mat-icon>menu</mat-icon>
+  </button>
   <a class="title" href="/">{{ title }}</a>
-
-  <div class="toolbar-spacer"></div>
-
-  <a mat-button [routerLink]="['profile']">Profile</a>
-
-  <button mat-raised-button *ngIf="!loginDisplay" (click)="login()">Login</button>
-  <button mat-raised-button *ngIf="loginDisplay" (click)="logout()">Logout</button>
-
 </mat-toolbar>
-<div class="container">
+<div class="container" role="main">
   <!--This is to avoid reload during acquireTokenSilent() because of hidden iframe -->
   <router-outlet *ngIf="!isIframe"></router-outlet>
 </div>
